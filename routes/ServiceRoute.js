@@ -15,4 +15,7 @@ router.get("/service/:id", getService);
 // get services
 router.get("/services/:id", getServices);
 
+// services for kiosk
+router.get("/kiosk/:id")
+
 export default router

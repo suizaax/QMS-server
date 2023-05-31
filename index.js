@@ -5,6 +5,7 @@ import mongoose from "mongoose"
 import companyRouter from "./routes/SuperAdminRoute.js"
 import agentsRouter from "./routes/AgentRoute.js"
 import servicesRouter from "./routes/ServiceRoute.js"
+import clientsRouter from "./routes/ClientsRoute.js"
 
 
 dotenv.config();
@@ -31,6 +32,7 @@ app.use(cors())
 app.use("/api/companies", companyRouter)
 app.use("/api/agents", agentsRouter)
 app.use("/api/services", servicesRouter)
+app.use("/api/tickets", clientsRouter)
 
 
 app.use((err, req, res, next) => {
