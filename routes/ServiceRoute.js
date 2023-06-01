@@ -1,5 +1,5 @@
 import express from "express";
-import { createService, getService, getServices, updateService } from "../controllers/ServiceController.js";
+import { createService, getService, getServices, printPdf, updateService } from "../controllers/ServiceController.js";
 
 const router = express.Router();
 
@@ -17,5 +17,8 @@ router.get("/services/:id", getServices);
 
 // services for kiosk
 router.get("/kiosk/:id")
+
+// print ticket
+router.post("/print/pdf", printPdf)
 
 export default router

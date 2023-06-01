@@ -1,3 +1,4 @@
+import moment from "moment"
 import clients from "../models/Client.js"
 import { createError } from "../util/error.js"
 
@@ -5,13 +6,16 @@ export const createClient = async (req, res, next) => {
 
     try {
 
+        const today = moment().startOf('day');
+
         if (clients.find()) {
             const checkExistance = await clients.findOne({ number: req.body.number, letter: req.body.letter }).lean().exec()
 
             if (checkExistance) return next(createError(400, 'Ticket with same number already issued'))
         }
 
-        const getBiggestNumber = await clients.findOne({ letter: req.body.letter }).sort({ number: -1 }).lean().exec();
+        const getBiggestNumber = await clients.findOne({ letter: req.body.letter, issuedTime: { $gte: today.toDate() } }).sort({ number: -1 }).lean().exec();
+        console.log(getBiggestNumber)
 
         if (getBiggestNumber) {
             const registerClient = new clients({
@@ -44,4 +48,28 @@ export const createClient = async (req, res, next) => {
         next(error)
     }
 
+}
+
+export const getAllTickets = async (req, res, next) => {
+    try {
+        const allTickets = await clients.find({ companyId: req.params.id })
+        res.status(200).json(allTickets)
+    } catch (error) {
+        next(error)
+    }
+}
+
+export const getTodayTickets = async (req, res, next) => {
+    try {
+        const today = moment().startOf('day');
+
+        const allTickets = await clients.find({
+            companyId: req.params.id,
+            issuedTime: { $gte: today.toDate() }
+        });
+
+        res.status(200).json(allTickets);
+    } catch (error) {
+        next(error)
+    }
 }
