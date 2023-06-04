@@ -27,39 +27,51 @@ export const logAgent = async (req, res, next) => {
     try {
         const checkAgent = await agent.findOne({ email: req.body.email });
         if (!checkAgent) return next(createError(400, "Agent doesn't exist"));
-      
+
         const checkPassword = await bcrypt.compare(req.body.password, checkAgent.password);
         if (!checkPassword) return next(createError(400, "E-mail or password is wrong"));
-      
+
         const updatedAgent = await agent.findByIdAndUpdate(
-          checkAgent._id,
-          { $set: { lastLogin: Date.now() } },
-          { new: true }
+            checkAgent._id,
+            { $set: { lastLogin: Date.now() } },
+            { new: true }
         );
-      
+
         const serviceData = await Service.findOne({ agentId: updatedAgent._id });
-      
+
         const companyData = await superAdmin.findOne({ _id: updatedAgent.companyId });
-      
+
         const finalData = {
-          ...(serviceData ? serviceData.toObject() : {}), // Check if serviceData exists, convert it to object if available, or use an empty object otherwise
-          company: companyData,
-          agent: updatedAgent,
+            ...(serviceData ? serviceData.toObject() : {}), // Check if serviceData exists, convert it to object if available, or use an empty object otherwise
+            company: companyData,
+            agent: updatedAgent,
         };
-      
+
         console.log(finalData);
-      
+
         res.status(200).json(finalData);
-      } catch (error) {
+    } catch (error) {
         next(error);
-      }
-      
+    }
+
 }
 
 export const updateAgent = async (req, res, next) => {
     try {
         const currentAgent = await agent.findByIdAndUpdate(req.params.id, { $set: { ...req.body } }, { new: true })
         res.status(200).json(currentAgent)
+    } catch (error) {
+        next(error)
+    }
+}
+
+export const updateAgentPass = async (req, res, next) => {
+    try {
+        const salt = bcrypt.genSaltSync(10);
+        const hash = bcrypt.hashSync(req.body.password, salt)
+
+        const updatedAgent = await agent.findByIdAndUpdate(req.params.id, { $set: { password: hash } }, { new: true })
+        res.status(200).json(updatedAgent)
     } catch (error) {
         next(error)
     }

@@ -1,8 +1,5 @@
 import Agent from "../models/Agent.js";
 import service from "../models/Service.js"
-import PDFDocument from 'pdfkit';
-import path from "path"
-import fs from "fs"
 
 export const createService = async (req, res, next) => {
     try {

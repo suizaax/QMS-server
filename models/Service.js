@@ -17,7 +17,7 @@ const serviceSchema = new Schema({
         maxlength: 2
     },
     agentId: {
-        type: String,
+        type: Array,
         required: false
     },
     icon: {

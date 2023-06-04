@@ -1,5 +1,5 @@
 import express from "express"
-import { deleteAgent, getAgent, getAgents, getNonAsignedAgents, logAgent, registerAgent, updateAgent } from "../controllers/AgentController.js";
+import { deleteAgent, getAgent, getAgents, getNonAsignedAgents, logAgent, registerAgent, updateAgent, updateAgentPass } from "../controllers/AgentController.js";
 
 const router = express.Router();
 
@@ -11,6 +11,9 @@ router.post("/login", logAgent);
 
 // update agent
 router.put("/:id", updateAgent);
+
+// update agent password
+router.put("/password/:id", updateAgentPass)
 
 // delete agent
 router.delete("/:id", deleteAgent);

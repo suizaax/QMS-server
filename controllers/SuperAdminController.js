@@ -2,6 +2,9 @@ import bcrypt from "bcryptjs"
 import superAdmin from "../models/SuperAdmin.js"
 import { createError } from "../util/error.js"
 import jwt from "jsonwebtoken"
+import Ticket from "../models/Ticket.js"
+import Counter from "../models/Counter.js"
+import Service from "../models/Service.js"
 
 export const createCompany = async (req, res, next) => {
 
@@ -14,9 +17,17 @@ export const createCompany = async (req, res, next) => {
             password: hash
         });
 
-        await newCompany.save();
+        const ticketInfo = new Ticket({
+            companyId: newCompany._id,
+            companyName: newCompany.name
+        })
 
-        res.status(200).json(newCompany);
+        await newCompany.save();
+        await ticketInfo.save();
+
+        const finalCompany = { ...newCompany.toObject(), ticket: ticketInfo };
+
+        res.status(200).json(finalCompany);
 
     } catch (error) {
         next(error)
@@ -69,8 +80,19 @@ export const deleteCompany = async (req, res, next) => {
 export const getCompany = async (req, res, next) => {
     try {
         const companyInfo = await superAdmin.findById(req.params.id)
+        const ticketInfo = await Ticket.findOne({ companyId: companyInfo._id })
         const { password, ...otherDetails } = companyInfo._doc
-        res.status(200).json({ ...otherDetails })
+
+
+        if (ticketInfo) {
+            const finalData = { ...otherDetails, ticket: ticketInfo }
+            res.status(200).json(finalData)
+        } else {
+            const finalData = { ...otherDetails }
+            res.status(200).json(finalData)
+        }
+
+
     } catch (error) {
         next(error)
     }
@@ -99,6 +121,69 @@ export const deleteNews = async (req, res, next) => {
     try {
         const company = await superAdmin.findByIdAndUpdate(req.params.id, { $pull: { SBnews: req.body.index } }, { new: true })
         res.status(200).json(company)
+    } catch (error) {
+        next(error)
+    }
+}
+
+
+export const updateTicket = async (req, res, next) => {
+    try {
+        const ticketInfo = await Ticket.findOneAndUpdate({ companyId: req.params.id }, { $set: { ...req.body } }, { new: true })
+        res.status(200).json(ticketInfo)
+    } catch (error) {
+        next(error)
+    }
+}
+
+export const createCounter = async (req, res, next) => {
+    try {
+        const counterData = new Counter({
+            companyId: req.params.id,
+            ...req.body
+        })
+
+        const checkExistence = await Counter.findOne({ counterNumber: req.body.counterNumber }).lean().exec()
+
+        if (checkExistence) {
+            return next(createError(403, "Counter with same number already exist."))
+        } else {
+            await counterData.save()
+            res.status(200).json(counterData)
+        }
+
+    } catch (error) {
+        next(error)
+    }
+}
+
+export const countersList = async (req, res, next) => {
+    try {
+        const allCounters = await Counter.find({ companyId: req.params.id })
+        const services = await Promise.all(
+            allCounters.map((service) => {
+                if (service.serviceId) {
+                    return Service.findById(service.serviceId);
+                }
+                return null;
+            })
+        );
+        const countersWithServices = allCounters.map((service, index) => {
+            const agent = services[index];
+            return { ...service.toObject(), agent };
+        });
+        res.status(200).json(countersWithServices)
+    } catch (error) {
+        next(error)
+    }
+}
+
+export const deleteCounter = async (req, res, next) => {
+    try {
+        await Counter.findByIdAndDelete(req.params.id)
+
+        res.status(200).send("Deleted with success")
+
     } catch (error) {
         next(error)
     }

@@ -39,6 +39,10 @@ const clientSchema = new Schema({
     phoneNumber: {
         type: String,
         required: false
+    },
+    clientType: {
+        type: String,
+        required: true
     }
 }, { timestamps: true })
 
