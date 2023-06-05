@@ -1,7 +1,6 @@
 import bcrypt from "bcryptjs"
 import superAdmin from "../models/SuperAdmin.js"
 import { createError } from "../util/error.js"
-import jwt from "jsonwebtoken"
 import Ticket from "../models/Ticket.js"
 import Counter from "../models/Counter.js"
 import Service from "../models/Service.js"
@@ -44,14 +43,20 @@ export const companyLogin = async (req, res, next) => {
         const validPass = await bcrypt.compare(req.body.password, company.password)
         if (!validPass) return next(createError(400, "E-mail or password is wrong"))
 
-        await superAdmin.findByIdAndUpdate(company._id, { $set: { lastLogin: Date.now() } })
-
-        const token = jwt.sign({ _id: company._id, isAdmin: company.isAdmin }, process.env.jwt_secret)
+        const ticketInfo = await Ticket.findOne({ companyId: companyInfo._id })
         const { password, ...otherDetails } = company._doc
 
-        res.cookie("company_token", token, {
-            httpOnly: true
-        }).status(200).json({ ...otherDetails, token })
+        if (ticketInfo) {
+            const finalData = { ...otherDetails, ticket: ticketInfo }
+            res.status(200).json(finalData)
+            await superAdmin.findByIdAndUpdate(company._id, { $set: { lastLogin: Date.now() } })
+        } else {
+            const finalData = { ...otherDetails }
+            await superAdmin.findByIdAndUpdate(company._id, { $set: { lastLogin: Date.now() } })
+            res.status(200).json(finalData)
+        }
+
+
 
     } catch (error) {
         next(error)
