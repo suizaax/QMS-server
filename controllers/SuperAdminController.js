@@ -43,7 +43,7 @@ export const companyLogin = async (req, res, next) => {
         const validPass = await bcrypt.compare(req.body.password, company.password)
         if (!validPass) return next(createError(400, "E-mail or password is wrong"))
 
-        const ticketInfo = await Ticket.findOne({ companyId: companyInfo._id })
+        const ticketInfo = await Ticket.findOne({ companyId: company._id })
         const { password, ...otherDetails } = company._doc
 
         if (ticketInfo) {
