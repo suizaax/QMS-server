@@ -20,7 +20,7 @@ export const createClient = async (req, res, next) => {
         if (getBiggestNumber) {
             const registerClient = new clients({
                 ...req.body,
-                agentId: req.body.agentId,
+                // agentId: req.body.agentId,
                 agentName: req.body.agentName,
                 companyId: req.body.companyId,
                 number: getBiggestNumber.number + 1

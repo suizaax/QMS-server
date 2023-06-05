@@ -15,10 +15,10 @@ const clientSchema = new Schema({
         type: String,
         required: true
     },
-    agentId: {
-        type: String,
-        required: true
-    },
+    // agentId: {
+    //     type: String,
+    //     required: true
+    // },
     companyId: {
         type: String,
         required: true
