@@ -43,7 +43,7 @@ export const companyLogin = async (req, res, next) => {
         const validPass = await bcrypt.compare(req.body.password, company.password)
         if (!validPass) return next(createError(400, "E-mail or password is wrong"))
 
-        const ticketInfo = await Ticket.findOne({ companyId: companyInfo._id })
+        const ticketInfo = await Ticket.findOne({ companyId: company._id })
         const { password, ...otherDetails } = company._doc
 
         if (ticketInfo) {
@@ -67,7 +67,16 @@ export const companyLogin = async (req, res, next) => {
 export const updateCompany = async (req, res, next) => {
     try {
         const updatedCompanyInfo = await superAdmin.findByIdAndUpdate(req.params.id, { $set: { ...req.body } }, { new: true })
-        res.status(200).json(updatedCompanyInfo)
+        const ticketInfo = await Ticket.findOne({ companyId: updatedCompanyInfo._id })
+        const { password, ...otherDetails } = updatedCompanyInfo._doc
+
+        if (ticketInfo) {
+            const finalData = { ...otherDetails, ticket: ticketInfo }
+            res.status(200).json(finalData)
+        } else {
+            const finalData = { ...otherDetails }
+            res.status(200).json(finalData)
+        }
     } catch (error) {
         next(error)
     }

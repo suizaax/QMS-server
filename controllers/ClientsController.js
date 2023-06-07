@@ -14,7 +14,7 @@ export const createClient = async (req, res, next) => {
             if (checkExistance) return next(createError(400, 'Ticket with same number already issued'))
         }
 
-        const getBiggestNumber = await clients.findOne({ letter: req.body.letter, issuedTime: { $gte: today.toDate() } }).sort({ number: -1 }).lean().exec();
+        const getBiggestNumber = await clients.findOne({ letter: req.body.letter, issuedTime: { $gte: today.toDate() } }).sort({ number: -1 });
         console.log(getBiggestNumber)
 
         if (getBiggestNumber) {
@@ -29,19 +29,21 @@ export const createClient = async (req, res, next) => {
             await registerClient.save()
 
             res.status(200).json(registerClient);
+        } else {
+            const registerClient = new clients({
+                ...req.body,
+                agentId: req.body.agentId,
+                agentName: req.body.agentName,
+                companyId: req.body.companyId,
+                number: 1
+            })
+
+            await registerClient.save()
+
+            res.status(200).json(registerClient);
         }
 
-        const registerClient = new clients({
-            ...req.body,
-            agentId: req.body.agentId,
-            agentName: req.body.agentName,
-            companyId: req.body.companyId,
-            number: 1
-        })
 
-        await registerClient.save()
-
-        res.status(200).json(registerClient);
 
     } catch (error) {
         console.log(error)

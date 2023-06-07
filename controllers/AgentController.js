@@ -37,22 +37,23 @@ export const logAgent = async (req, res, next) => {
             { new: true }
         );
 
-        const serviceData = await Service.findOne({ agentId: updatedAgent._id });
+        const updatedAgentId = updatedAgent._id.toString();
+
+        const serviceData = await Service.find({ agentId: { $in : [updatedAgentId] } });
 
         const companyData = await superAdmin.findOne({ _id: updatedAgent.companyId });
 
         const finalData = {
-            ...(serviceData ? serviceData.toObject() : {}), // Check if serviceData exists, convert it to object if available, or use an empty object otherwise
+            services: serviceData,
             company: companyData,
             agent: updatedAgent,
         };
-
-        console.log(finalData);
 
         res.status(200).json(finalData);
     } catch (error) {
         next(error);
     }
+
 
 }
 
