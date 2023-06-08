@@ -1,5 +1,5 @@
 import express from "express";
-import { createService, getService, getServices, updateService } from "../controllers/ServiceController.js";
+import { createService, deleteService, getService, getServices, updateService } from "../controllers/ServiceController.js";
 
 const router = express.Router();
 
@@ -8,6 +8,9 @@ router.post("/createService", createService);
 
 // update service
 router.put("/:id", updateService);
+
+// delete service
+router.delete("/:id", deleteService)
 
 // get service
 router.get("/service/:id", getService);

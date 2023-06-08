@@ -1,5 +1,6 @@
 import Agent from "../models/Agent.js";
 import service from "../models/Service.js"
+import mongoose from "mongoose";
 
 export const createService = async (req, res, next) => {
     try {
@@ -24,6 +25,15 @@ export const updateService = async (req, res, next) => {
     }
 }
 
+export const deleteService = async (req, res, next) => {
+    try {
+        await service.findByIdAndDelete(req.params.id)
+        res.status(200).send("deleted succeffully")
+    } catch (error) {
+        next(error)
+    }
+}
+
 export const getService = async (req, res, next) => {
     try {
         const serviceInfo = await service.findById(req.params.id)
@@ -39,20 +49,21 @@ export const getServices = async (req, res, next) => {
     try {
         const servicesInfo = await service.find({ companyId: req.params.id });
         const agents = await Promise.all(
-            servicesInfo.map((service) => {
-                if (service.agentId) {
-                    return Agent.findById(service.agentId);
-                }
-                return null;
-            })
+          servicesInfo.map(async (service) => {
+            if (service.agentId && mongoose.Types.ObjectId.isValid(service.agentId)) {
+              return await Agent.findById(service.agentId);
+            }
+            return null;
+          })
         );
         const servicesWithAgents = servicesInfo.map((service, index) => {
-            const agent = agents[index];
-            return { ...service.toObject(), agent };
+          const agent = agents[index];
+          return { ...service.toObject(), agent };
         });
-
+      
         res.status(200).json(servicesWithAgents);
-    } catch (error) {
+      } catch (error) {
         next(error);
-    }
+      }
+      
 }
