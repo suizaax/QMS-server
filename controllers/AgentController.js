@@ -154,7 +154,7 @@ export const callClientManually = async (req, res, next) => {
         const today = moment().startOf('day');
         const currentAgent = await Agent.findById(req.params.id)
 
-        const ticketToCall = await Client.findOne({ isActive: true, letter: req.body.letter, number: req.body.number, companyId: currentAgent.companyId, issuedTime: { $gte: today } }).sort({ number: 1 })
+        const ticketToCall = await Client.findOne({ letter: req.body.letter, number: req.body.number, companyId: currentAgent.companyId, issuedTime: { $gte: today } }).sort({ number: 1 })
 
         if (ticketToCall === null) return next(createError(403, `There's no customer for the selected service for now.`))
 
@@ -186,7 +186,7 @@ export const addHistory = async (req, res, next) => {
 export const getHistory = async (req, res, next) => {
     try {
 
-        const latest = await History.find({ agentId: req.params.id }).limit(10).sort({endTime: -1})
+        const latest = await History.find({ agentId: req.params.id }).limit(10).sort({ endTime: -1 })
 
         res.status(200).json(latest)
 
