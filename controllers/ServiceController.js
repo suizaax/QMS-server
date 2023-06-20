@@ -49,21 +49,21 @@ export const getServices = async (req, res, next) => {
     try {
         const servicesInfo = await service.find({ companyId: req.params.id });
         const agents = await Promise.all(
-          servicesInfo.map(async (service) => {
-            if (service.agentId && mongoose.Types.ObjectId.isValid(service.agentId)) {
-              return await Agent.findById(service.agentId);
-            }
-            return null;
-          })
+            servicesInfo.map(async (service) => {
+                if (service.agentId && mongoose.Types.ObjectId.isValid(service.agentId)) {
+                    return await Agent.findById(service.agentId);
+                }
+                return null;
+            })
         );
         const servicesWithAgents = servicesInfo.map((service, index) => {
-          const agent = agents[index];
-          return { ...service.toObject(), agent };
+            const agent = agents[index];
+            return { ...service.toObject(), agent };
         });
-      
+
         res.status(200).json(servicesWithAgents);
-      } catch (error) {
+    } catch (error) {
         next(error);
-      }
-      
+    }
+
 }

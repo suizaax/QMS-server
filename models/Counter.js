@@ -8,10 +8,6 @@ const counterSchema = new Schema({
         type: String,
         required: true
     },
-    serviceId: {
-        type: String,
-        required: true
-    },
     counterId: {
         type: String,
         required: true
@@ -21,6 +17,13 @@ const counterSchema = new Schema({
         required: true,
         maxlength: 2
     },
+    isActive: {
+        type: Boolean,
+        default: false
+    },
+    agentId: {
+        type: String,
+    }
 }, { timestamps: true })
 
 export default model("counter", counterSchema);

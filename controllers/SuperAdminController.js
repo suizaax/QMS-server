@@ -4,6 +4,7 @@ import { createError } from "../util/error.js"
 import Ticket from "../models/Ticket.js"
 import Counter from "../models/Counter.js"
 import Service from "../models/Service.js"
+import Agent from "../models/Agent.js"
 
 export const createCompany = async (req, res, next) => {
 
@@ -174,17 +175,31 @@ export const createCounter = async (req, res, next) => {
 export const countersList = async (req, res, next) => {
     try {
         const allCounters = await Counter.find({ companyId: req.params.id })
-        const services = await Promise.all(
-            allCounters.map((service) => {
-                if (service.serviceId) {
-                    return Service.findById(service.serviceId);
+        const agents = await Promise.all(
+            allCounters.map((agent) => {
+                if (agent.agentId) {
+                    return Agent.findById(agent.agentId);
                 }
                 return null;
             })
         );
-        const countersWithServices = allCounters.map((service, index) => {
-            const agent = services[index];
-            return { ...service.toObject(), agent };
+
+        const services = await Promise.all(
+            agents.map((service) => {
+                if (service) {
+                    return Service.find({ agentId: { $in: [service._id.toString()] } });
+                }
+                return null;
+            })
+        );
+
+        console.log(services)
+
+
+        const countersWithServices = allCounters.map((counter, index) => {
+            const agent = agents[index];
+            const service = services[index];
+            return { ...counter.toObject(), agent, service };
         });
         res.status(200).json(countersWithServices)
     } catch (error) {

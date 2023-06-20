@@ -1,5 +1,5 @@
 import express from "express"
-import { deleteAgent, getAgent, getAgents, getNonAsignedAgents, logAgent, registerAgent, updateAgent, updateAgentPass } from "../controllers/AgentController.js";
+import { addHistory, callClient, callClientManually, deleteAgent, emptyCounter, getAgent, getAgents, getHistory, logAgent, registerAgent, updateAgent, updateAgentPass } from "../controllers/AgentController.js";
 
 const router = express.Router();
 
@@ -25,6 +25,21 @@ router.get("/agent/:id", getAgent);
 router.get("/agents/:id", getAgents);
 
 // get unassigned agents
-router.get("/agents/unassigned/:id", getNonAsignedAgents)
+router.get("/agents/unassigned/:id")
+
+// Empty Counter
+router.post("/counter/:id", emptyCounter)
+
+// call client
+router.post("/client/:id", callClient)
+
+// call client manually
+router.post("/client/manual/:id", callClientManually)
+
+// add history
+router.post("/history/:id", addHistory)
+
+// get history
+router.get("/history/personal/:id", getHistory)
 
 export default router

@@ -75,3 +75,12 @@ export const getTodayTickets = async (req, res, next) => {
         next(error)
     }
 }
+
+export const updateClient = async (req, res, next) => {
+    try {
+        const updateClient = await clients.findByIdAndUpdate(req.params.id, { $set: { isActive: false } }, { new: true })
+        res.status(200).json(updateClient)
+    } catch (error) {
+        next(error)
+    }
+}

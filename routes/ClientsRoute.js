@@ -1,5 +1,5 @@
 import express from "express";
-import { createClient, getAllTickets, getTodayTickets } from "../controllers/ClientsController.js";
+import { createClient, getAllTickets, getTodayTickets, updateClient } from "../controllers/ClientsController.js";
 
 const router = express.Router();
 
@@ -7,7 +7,7 @@ const router = express.Router();
 router.post("/create", createClient)
 
 // update client
-router.put("/:id")
+router.put("/:id", updateClient)
 
 // get client
 router.post("/client/:id")
