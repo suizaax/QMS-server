@@ -29,7 +29,8 @@ const clientSchema = new Schema({
     },
     issuedTime: {
         type: Date,
-        default: Date.now()
+        default: Date.now(),
+        index: true
     },
     isActive: {
         type: Boolean,

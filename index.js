@@ -6,6 +6,7 @@ import companyRouter from "./routes/SuperAdminRoute.js"
 import agentsRouter from "./routes/AgentRoute.js"
 import servicesRouter from "./routes/ServiceRoute.js"
 import clientsRouter from "./routes/ClientsRoute.js"
+import uploadRouter from "./controllers/UploadController.js"
 
 
 dotenv.config();
@@ -33,6 +34,7 @@ app.use("/api/companies", companyRouter)
 app.use("/api/agents", agentsRouter)
 app.use("/api/services", servicesRouter)
 app.use("/api/tickets", clientsRouter)
+app.use("/api/upload", uploadRouter)
 
 
 app.use((err, req, res, next) => {

@@ -115,3 +115,884 @@ export const transferClient = async (req, res, next) => {
         next(error)
     }
 }
+
+// today data
+
+export const todayClients = async (req, res, next) => {
+    try {
+        const memberCount = await clients.find({
+            issuedTime: { $gte: new moment().format("YYYY-MM-DDT00:00:00"), $lte: new moment().format("YYYY-MM-DDT23:59:59") },
+            companyId: req.params.id,
+            isActive: true
+        }).countDocuments()
+
+        res.status(200).json(memberCount)
+
+    } catch (error) {
+        next(error)
+    }
+}
+
+export const todayServed = async (req, res, next) => {
+    try {
+        const memberCount = await clients.find({
+            issuedTime: { $gte: new moment().format("YYYY-MM-DDT00:00:00"), $lte: new moment().format("YYYY-MM-DDT23:59:59") },
+            companyId: req.params.id,
+            isActive: false
+        }).countDocuments()
+
+        res.status(200).json(memberCount)
+
+    } catch (error) {
+        next(error)
+    }
+}
+
+export const todayInd = async (req, res, next) => {
+    try {
+        const memberCount = await clients.find({
+            issuedTime: { $gte: new moment().format("YYYY-MM-DDT00:00:00"), $lte: new moment().format("YYYY-MM-DDT23:59:59") },
+            companyId: req.params.id,
+            clientType: "Individuel"
+        }).countDocuments()
+
+        res.status(200).json(memberCount)
+
+    } catch (error) {
+        next(error)
+    }
+}
+
+export const todayBusiness = async (req, res, next) => {
+    try {
+        const memberCount = await clients.find({
+            issuedTime: { $gte: new moment().format("YYYY-MM-DDT00:00:00"), $lte: new moment().format("YYYY-MM-DDT23:59:59") },
+            companyId: req.params.id,
+            clientType: "Business"
+        }).countDocuments()
+
+        res.status(200).json(memberCount)
+
+    } catch (error) {
+        next(error)
+    }
+}
+
+// today data end
+
+// yesterday data
+
+export const yesterdayClients = async (req, res, next) => {
+    try {
+        const memberCount = await clients.find({
+            issuedTime: { $gte: new moment().subtract(1, "days").format("YYYY-MM-DDT00:00:00"), $lte: new moment().subtract(1, "days").format("YYYY-MM-DDT23:59:59") },
+            companyId: req.params.id,
+        }).countDocuments()
+
+        res.status(200).json(memberCount)
+
+    } catch (error) {
+        next(error)
+    }
+}
+
+export const yesterdayServed = async (req, res, next) => {
+    try {
+        const memberCount = await clients.find({
+            issuedTime: { $gte: new moment().subtract(1, "days").format("YYYY-MM-DDT00:00:00"), $lte: new moment().subtract(1, "days").format("YYYY-MM-DDT23:59:59") },
+            companyId: req.params.id,
+            isActive: false
+        }).countDocuments()
+
+        res.status(200).json(memberCount)
+
+    } catch (error) {
+        next(error)
+    }
+}
+
+export const yesterdayInd = async (req, res, next) => {
+    try {
+        const memberCount = await clients.find({
+            issuedTime: { $gte: new moment().subtract(1, "days").format("YYYY-MM-DDT00:00:00"), $lte: new moment().subtract(1, "days").format("YYYY-MM-DDT23:59:59") },
+            companyId: req.params.id,
+            clientType: "Individuel"
+        }).countDocuments()
+
+        res.status(200).json(memberCount)
+
+    } catch (error) {
+        next(error)
+    }
+}
+
+export const yesterdayBusiness = async (req, res, next) => {
+    try {
+        const memberCount = await clients.find({
+            issuedTime: { $gte: new moment().subtract(1, "days").format("YYYY-MM-DDT00:00:00"), $lte: new moment().subtract(1, "days").format("YYYY-MM-DDT23:59:59") },
+            companyId: req.params.id,
+            clientType: "Business"
+        }).countDocuments()
+
+        res.status(200).json(memberCount)
+
+    } catch (error) {
+        next(error)
+    }
+}
+
+// yesterday data end
+
+// weekly data
+
+export const weeklyClients = async (req, res, next) => {
+    try {
+
+        const today = await clients.find({
+            issuedTime: { $gte: new moment().format("YYYY-MM-DDT00:00:00"), $lte: new moment().format("YYYY-MM-DDT23:59:59") }
+            , companyId: req.params.id,
+        }).countDocuments()
+
+        const yesterday = await clients.find({
+            issuedTime: { $gte: new moment().subtract(1, "days").format("YYYY-MM-DDT00:00:00"), $lte: new moment().subtract(1, "days").format("YYYY-MM-DDT23:59:59") }
+            , companyId: req.params.id,
+            isActive: true
+        }).countDocuments()
+
+        const twoDays = await clients.find({
+            issuedTime: { $gte: new moment().subtract(2, "days").format("YYYY-MM-DDT00:00:00"), $lte: new moment().subtract(2, "days").format("YYYY-MM-DDT23:59:59") }
+            , companyId: req.params.id,
+            isActive: true
+        }).countDocuments()
+
+        const threeDays = await clients.find({
+            issuedTime: { $gte: new moment().subtract(3, "days").format("YYYY-MM-DDT00:00:00"), $lte: new moment().subtract(3, "days").format("YYYY-MM-DDT23:59:59") }
+            , companyId: req.params.id,
+            isActive: true
+        }).countDocuments()
+
+        const fourDays = await clients.find({
+            issuedTime: { $gte: new moment().subtract(4, "days").format("YYYY-MM-DDT00:00:00"), $lte: new moment().subtract(4, "days").format("YYYY-MM-DDT23:59:59") }
+            , companyId: req.params.id,
+            isActive: true
+        }).countDocuments()
+
+        const fiveDays = await clients.find({
+            issuedTime: { $gte: new moment().subtract(5, "days").format("YYYY-MM-DDT00:00:00"), $lte: new moment().subtract(5, "days").format("YYYY-MM-DDT23:59:59") }
+            , companyId: req.params.id,
+            isActive: true
+        }).countDocuments()
+
+        const sixDays = await clients.find({
+            issuedTime: { $gte: new moment().subtract(6, "days").format("YYYY-MM-DDT00:00:00"), $lte: new moment().subtract(6, "days").format("YYYY-MM-DDT23:59:59") }
+            , companyId: req.params.id,
+            isActive: true
+        }).countDocuments()
+
+        const sevenDays = await clients.find({
+            issuedTime: { $gte: new moment().subtract(7, "days").format("YYYY-MM-DDT00:00:00"), $lte: new moment().subtract(7, "days").format("YYYY-MM-DDT23:59:59") }
+            , companyId: req.params.id,
+            isActive: true
+        }).countDocuments()
+
+        res.status(200).json([
+            { date: moment().format("DD/MM"), count: today },
+            { date: moment().subtract(1, "days").format("DD/MM"), count: yesterday },
+            { date: moment().subtract(2, "days").format("DD/MM"), count: twoDays },
+            { date: moment().subtract(3, "days").format("DD/MM"), count: threeDays },
+            { date: moment().subtract(4, "days").format("DD/MM"), count: fourDays },
+            { date: moment().subtract(5, "days").format("DD/MM"), count: fiveDays },
+            { date: moment().subtract(6, "days").format("DD/MM"), count: sixDays },
+            { date: moment().subtract(7, "days").format("DD/MM"), count: sevenDays },
+        ])
+
+    } catch (error) {
+        next(error)
+    }
+}
+
+export const weeklyServed = async (req, res, next) => {
+    try {
+
+        const today = await clients.find({
+            issuedTime: { $gte: new moment().format("YYYY-MM-DDT00:00:00"), $lte: new moment().format("YYYY-MM-DDT23:59:59") }
+            , companyId: req.params.id,
+            isActive: false
+        }).countDocuments()
+
+        const yesterday = await clients.find({
+            issuedTime: { $gte: new moment().subtract(1, "days").format("YYYY-MM-DDT00:00:00"), $lte: new moment().subtract(1, "days").format("YYYY-MM-DDT23:59:59") }
+            , companyId: req.params.id,
+            isActive: false
+        }).countDocuments()
+
+        const twoDays = await clients.find({
+            issuedTime: { $gte: new moment().subtract(2, "days").format("YYYY-MM-DDT00:00:00"), $lte: new moment().subtract(2, "days").format("YYYY-MM-DDT23:59:59") }
+            , companyId: req.params.id,
+            isActive: false
+        }).countDocuments()
+
+        const threeDays = await clients.find({
+            issuedTime: { $gte: new moment().subtract(3, "days").format("YYYY-MM-DDT00:00:00"), $lte: new moment().subtract(3, "days").format("YYYY-MM-DDT23:59:59") }
+            , companyId: req.params.id,
+            isActive: false
+        }).countDocuments()
+
+        const fourDays = await clients.find({
+            issuedTime: { $gte: new moment().subtract(4, "days").format("YYYY-MM-DDT00:00:00"), $lte: new moment().subtract(4, "days").format("YYYY-MM-DDT23:59:59") }
+            , companyId: req.params.id,
+            isActive: false
+        }).countDocuments()
+
+        const fiveDays = await clients.find({
+            issuedTime: { $gte: new moment().subtract(5, "days").format("YYYY-MM-DDT00:00:00"), $lte: new moment().subtract(5, "days").format("YYYY-MM-DDT23:59:59") }
+            , companyId: req.params.id,
+            isActive: false
+        }).countDocuments()
+
+        const sixDays = await clients.find({
+            issuedTime: { $gte: new moment().subtract(6, "days").format("YYYY-MM-DDT00:00:00"), $lte: new moment().subtract(6, "days").format("YYYY-MM-DDT23:59:59") }
+            , companyId: req.params.id,
+            isActive: false
+        }).countDocuments()
+
+        const sevenDays = await clients.find({
+            issuedTime: { $gte: new moment().subtract(7, "days").format("YYYY-MM-DDT00:00:00"), $lte: new moment().subtract(7, "days").format("YYYY-MM-DDT23:59:59") }
+            , companyId: req.params.id,
+            isActive: false
+        }).countDocuments()
+
+        res.status(200).json([
+            { date: moment().format("DD/MM"), count: today },
+            { date: moment().subtract(1, "days").format("DD/MM"), count: yesterday },
+            { date: moment().subtract(2, "days").format("DD/MM"), count: twoDays },
+            { date: moment().subtract(3, "days").format("DD/MM"), count: threeDays },
+            { date: moment().subtract(4, "days").format("DD/MM"), count: fourDays },
+            { date: moment().subtract(5, "days").format("DD/MM"), count: fiveDays },
+            { date: moment().subtract(6, "days").format("DD/MM"), count: sixDays },
+            { date: moment().subtract(7, "days").format("DD/MM"), count: sevenDays },
+        ])
+
+    } catch (error) {
+        next(error)
+    }
+}
+
+// weekly data end
+
+// monthly Data
+
+export const monthlyClients = async (req, res, next) => {
+    try {
+        const counts = [];
+
+        for (let i = 0; i < 30; i++) {
+            const day = moment().subtract(i, "days");
+            const count = await clients.find({
+                issuedTime: {
+                    $gte: day.startOf("day").format("YYYY-MM-DDTHH:mm:ss"),
+                    $lte: day.endOf("day").format("YYYY-MM-DDTHH:mm:ss")
+                },
+                companyId: req.params.id,
+            }).countDocuments();
+
+            counts.push({ date: day.format("DD/MM"), count })
+        }
+
+        res.status(200).json(counts);
+
+    } catch (error) {
+        next(error)
+    }
+}
+
+export const monthlyServed = async (req, res, next) => {
+    try {
+        const counts = [];
+
+        for (let i = 0; i < 30; i++) {
+            const day = moment().subtract(i, "days");
+            const count = await clients.find({
+                issuedTime: {
+                    $gte: day.startOf("day").format("YYYY-MM-DDTHH:mm:ss"),
+                    $lte: day.endOf("day").format("YYYY-MM-DDTHH:mm:ss")
+                },
+                companyId: req.params.id,
+                isActive: false
+            }).countDocuments();
+
+            counts.push({ date: day.format("DD/MM"), count })
+        }
+
+        res.status(200).json(counts);
+
+    } catch (error) {
+        next(error)
+    }
+}
+
+// monthly Data end
+
+// Quarterly data
+
+export const quarterlyClients = async (req, res, next) => {
+    try {
+        const startDate = moment().subtract(90, 'days').startOf('day').toDate();
+        const endDate = moment().endOf('day').toDate();
+
+        const pipeline = [
+            {
+                $match: {
+                    issuedTime: {
+                        $gte: startDate,
+                        $lte: endDate
+                    },
+                    companyId: req.params.id,
+                    // isActive: false
+                }
+            },
+            {
+                $group: {
+                    _id: {
+                        $dateToString: {
+                            format: '%d/%m',
+                            date: '$issuedTime'
+                        }
+                    },
+                    count: { $sum: 1 }
+                }
+            },
+            {
+                $group: {
+                    _id: null,
+                    counts: {
+                        $push: {
+                            date: '$_id',
+                            count: '$count'
+                        }
+                    }
+                }
+            },
+            {
+                $addFields: {
+                    dates: {
+                        $map: {
+                            input: {
+                                $range: [0, 90]
+                            },
+                            as: 'day',
+                            in: {
+                                $dateToString: {
+                                    format: '%d/%m',
+                                    date: { $add: [startDate, { $multiply: ['$$day', 24 * 60 * 60 * 1000] }] }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            {
+                $lookup: {
+                    from: 'clients', // Replace 'YourModels' with the actual collection name
+                    let: { days: '$dates' },
+                    pipeline: [
+                        {
+                            $match: {
+                                $expr: {
+                                    $and: [
+                                        { $in: [{ $dateToString: { format: '%d/%m', date: '$issuedTime' } }, '$$days'] },
+                                        { $eq: ['$companyId', req.params.id] },
+                                        //   { $eq: ['$isActive', false] }
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            $group: {
+                                _id: {
+                                    $dateToString: {
+                                        format: '%d/%m',
+                                        date: '$issuedTime'
+                                    }
+                                },
+                                count: { $sum: 1 }
+                            }
+                        }
+                    ],
+                    as: 'matchedDocs'
+                }
+            },
+            {
+                $unwind: {
+                    path: '$dates',
+                    preserveNullAndEmptyArrays: true
+                }
+            },
+            {
+                $lookup: {
+                    from: 'clients', // Replace 'YourModels' with the actual collection name
+                    let: { date: '$dates' },
+                    pipeline: [
+                        {
+                            $match: {
+                                $expr: {
+                                    $and: [
+                                        { $eq: [{ $dateToString: { format: '%d/%m', date: '$issuedTime' } }, '$$date'] },
+                                        { $eq: ['$companyId', req.params.id] },
+                                        //   { $eq: ['$isActive', false] }
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            $count: 'count'
+                        }
+                    ],
+                    as: 'matchedCount'
+                }
+            },
+            {
+                $addFields: {
+                    count: { $ifNull: [{ $arrayElemAt: ['$matchedCount.count', 0] }, 0] }
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    date: '$dates',
+                    count: 1
+                }
+            }
+        ];
+
+        const result = await clients.aggregate(pipeline);
+
+        res.status(200).json(result);
+
+    } catch (error) {
+        next(error)
+    }
+}
+
+export const quarterlyServed = async (req, res, next) => {
+    try {
+        const startDate = moment().subtract(90, 'days').startOf('day').toDate();
+        const endDate = moment().endOf('day').toDate();
+
+        const pipeline = [
+            {
+                $match: {
+                    issuedTime: {
+                        $gte: startDate,
+                        $lte: endDate
+                    },
+                    companyId: req.params.id,
+                    isActive: false
+                }
+            },
+            {
+                $group: {
+                    _id: {
+                        $dateToString: {
+                            format: '%d/%m',
+                            date: '$issuedTime'
+                        }
+                    },
+                    count: { $sum: 1 }
+                }
+            },
+            {
+                $group: {
+                    _id: null,
+                    counts: {
+                        $push: {
+                            date: '$_id',
+                            count: '$count'
+                        }
+                    }
+                }
+            },
+            {
+                $addFields: {
+                    dates: {
+                        $map: {
+                            input: {
+                                $range: [0, 90]
+                            },
+                            as: 'day',
+                            in: {
+                                $dateToString: {
+                                    format: '%d/%m',
+                                    date: { $add: [startDate, { $multiply: ['$$day', 24 * 60 * 60 * 1000] }] }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            {
+                $lookup: {
+                    from: 'clients', // Replace 'YourModels' with the actual collection name
+                    let: { days: '$dates' },
+                    pipeline: [
+                        {
+                            $match: {
+                                $expr: {
+                                    $and: [
+                                        { $in: [{ $dateToString: { format: '%d/%m', date: '$issuedTime' } }, '$$days'] },
+                                        { $eq: ['$companyId', req.params.id] },
+                                        { $eq: ['$isActive', false] }
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            $group: {
+                                _id: {
+                                    $dateToString: {
+                                        format: '%d/%m',
+                                        date: '$issuedTime'
+                                    }
+                                },
+                                count: { $sum: 1 }
+                            }
+                        }
+                    ],
+                    as: 'matchedDocs'
+                }
+            },
+            {
+                $unwind: {
+                    path: '$dates',
+                    preserveNullAndEmptyArrays: true
+                }
+            },
+            {
+                $lookup: {
+                    from: 'clients', // Replace 'YourModels' with the actual collection name
+                    let: { date: '$dates' },
+                    pipeline: [
+                        {
+                            $match: {
+                                $expr: {
+                                    $and: [
+                                        { $eq: [{ $dateToString: { format: '%d/%m', date: '$issuedTime' } }, '$$date'] },
+                                        { $eq: ['$companyId', req.params.id] },
+                                        { $eq: ['$isActive', false] }
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            $count: 'count'
+                        }
+                    ],
+                    as: 'matchedCount'
+                }
+            },
+            {
+                $addFields: {
+                    count: { $ifNull: [{ $arrayElemAt: ['$matchedCount.count', 0] }, 0] }
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    date: '$dates',
+                    count: 1
+                }
+            }
+        ];
+
+        const result = await clients.aggregate(pipeline);
+
+        res.status(200).json(result);
+
+    } catch (error) {
+        next(error)
+    }
+}
+
+// Quarterly data end
+
+// yearly data
+
+export const yearlyClients = async (req, res, next) => {
+    try {
+        const startDate = moment().subtract(365, 'days').startOf('day').toDate();
+        const endDate = moment().endOf('day').toDate();
+
+        const pipeline = [
+            {
+                $match: {
+                    issuedTime: {
+                        $gte: startDate,
+                        $lte: endDate
+                    },
+                    companyId: req.params.id,
+                    // isActive: false
+                }
+            },
+            {
+                $group: {
+                    _id: {
+                        $dateToString: {
+                            format: '%d/%m',
+                            date: '$issuedTime'
+                        }
+                    },
+                    count: { $sum: 1 }
+                }
+            },
+            {
+                $group: {
+                    _id: null,
+                    counts: {
+                        $push: {
+                            date: '$_id',
+                            count: '$count'
+                        }
+                    }
+                }
+            },
+            {
+                $addFields: {
+                    dates: {
+                        $map: {
+                            input: {
+                                $range: [0, 365]
+                            },
+                            as: 'day',
+                            in: {
+                                $dateToString: {
+                                    format: '%d/%m',
+                                    date: { $add: [startDate, { $multiply: ['$$day', 24 * 60 * 60 * 1000] }] }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            {
+                $lookup: {
+                    from: 'clients', // Replace 'YourModels' with the actual collection name
+                    let: { days: '$dates' },
+                    pipeline: [
+                        {
+                            $match: {
+                                $expr: {
+                                    $and: [
+                                        { $in: [{ $dateToString: { format: '%d/%m', date: '$issuedTime' } }, '$$days'] },
+                                        { $eq: ['$companyId', req.params.id] },
+                                        //   { $eq: ['$isActive', false] }
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            $group: {
+                                _id: {
+                                    $dateToString: {
+                                        format: '%d/%m',
+                                        date: '$issuedTime'
+                                    }
+                                },
+                                count: { $sum: 1 }
+                            }
+                        }
+                    ],
+                    as: 'matchedDocs'
+                }
+            },
+            {
+                $unwind: {
+                    path: '$dates',
+                    preserveNullAndEmptyArrays: true
+                }
+            },
+            {
+                $lookup: {
+                    from: 'clients', // Replace 'YourModels' with the actual collection name
+                    let: { date: '$dates' },
+                    pipeline: [
+                        {
+                            $match: {
+                                $expr: {
+                                    $and: [
+                                        { $eq: [{ $dateToString: { format: '%d/%m', date: '$issuedTime' } }, '$$date'] },
+                                        { $eq: ['$companyId', req.params.id] },
+                                        //   { $eq: ['$isActive', false] }
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            $count: 'count'
+                        }
+                    ],
+                    as: 'matchedCount'
+                }
+            },
+            {
+                $addFields: {
+                    count: { $ifNull: [{ $arrayElemAt: ['$matchedCount.count', 0] }, 0] }
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    date: '$dates',
+                    count: 1
+                }
+            }
+        ];
+
+        const result = await clients.aggregate(pipeline);
+
+        res.status(200).json(result);
+
+    } catch (error) {
+        next(error)
+    }
+}
+
+export const yearlyServed = async (req, res, next) => {
+    try {
+        const startDate = moment().subtract(365, 'days').startOf('day').toDate();
+        const endDate = moment().endOf('day').toDate();
+
+        const pipeline = [
+            {
+                $match: {
+                    issuedTime: {
+                        $gte: startDate,
+                        $lte: endDate
+                    },
+                    companyId: req.params.id,
+                    isActive: false
+                }
+            },
+            {
+                $group: {
+                    _id: {
+                        $dateToString: {
+                            format: '%d/%m',
+                            date: '$issuedTime'
+                        }
+                    },
+                    count: { $sum: 1 }
+                }
+            },
+            {
+                $group: {
+                    _id: null,
+                    counts: {
+                        $push: {
+                            date: '$_id',
+                            count: '$count'
+                        }
+                    }
+                }
+            },
+            {
+                $addFields: {
+                    dates: {
+                        $map: {
+                            input: {
+                                $range: [0, 365]
+                            },
+                            as: 'day',
+                            in: {
+                                $dateToString: {
+                                    format: '%d/%m',
+                                    date: { $add: [startDate, { $multiply: ['$$day', 24 * 60 * 60 * 1000] }] }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            {
+                $lookup: {
+                    from: 'clients', // Replace 'YourModels' with the actual collection name
+                    let: { days: '$dates' },
+                    pipeline: [
+                        {
+                            $match: {
+                                $expr: {
+                                    $and: [
+                                        { $in: [{ $dateToString: { format: '%d/%m', date: '$issuedTime' } }, '$$days'] },
+                                        { $eq: ['$companyId', req.params.id] },
+                                        { $eq: ['$isActive', false] }
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            $group: {
+                                _id: {
+                                    $dateToString: {
+                                        format: '%d/%m',
+                                        date: '$issuedTime'
+                                    }
+                                },
+                                count: { $sum: 1 }
+                            }
+                        }
+                    ],
+                    as: 'matchedDocs'
+                }
+            },
+            {
+                $unwind: {
+                    path: '$dates',
+                    preserveNullAndEmptyArrays: true
+                }
+            },
+            {
+                $lookup: {
+                    from: 'clients', // Replace 'YourModels' with the actual collection name
+                    let: { date: '$dates' },
+                    pipeline: [
+                        {
+                            $match: {
+                                $expr: {
+                                    $and: [
+                                        { $eq: [{ $dateToString: { format: '%d/%m', date: '$issuedTime' } }, '$$date'] },
+                                        { $eq: ['$companyId', req.params.id] },
+                                        { $eq: ['$isActive', false] }
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            $count: 'count'
+                        }
+                    ],
+                    as: 'matchedCount'
+                }
+            },
+            {
+                $addFields: {
+                    count: { $ifNull: [{ $arrayElemAt: ['$matchedCount.count', 0] }, 0] }
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    date: '$dates',
+                    count: 1
+                }
+            }
+        ];
+
+        const result = await clients.aggregate(pipeline);
+
+        res.status(200).json(result);
+
+    } catch (error) {
+        next(error);
+    }
+};
+
+// yearly data end

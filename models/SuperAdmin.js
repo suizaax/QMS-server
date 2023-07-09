@@ -54,6 +54,18 @@ const superAdminSchema = new Schema({
     SBTitle: {
         type: String,
         default: "Updates"
+    },
+    mediaType:{
+        type: String,
+        default: "Images"
+    },
+    imagesList: {
+        type: Array,
+        default: null
+    },
+    videoLink:{
+        type: String,
+        default: null
     }
 }, { timestamps: true })
 
