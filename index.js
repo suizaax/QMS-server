@@ -7,6 +7,8 @@ import agentsRouter from "./routes/AgentRoute.js"
 import servicesRouter from "./routes/ServiceRoute.js"
 import clientsRouter from "./routes/ClientsRoute.js"
 import uploadRouter from "./controllers/UploadController.js"
+import http from 'http';
+import { Server } from 'socket.io';
 
 
 dotenv.config();
@@ -28,8 +30,20 @@ mongoose.connection.on("disconnected", () => {
 
 const app = express();
 
+app.use(cors());
+
+
+// CORS middleware
+app.use(
+    cors({
+        origin: '*',
+    })
+);
+
+// CORS middleware for Socket.IO route
+app.options('/socket.io/*', cors());
+
 app.use(express.json({ limit: "20mb" }))
-app.use(cors())
 app.use("/api/companies", companyRouter)
 app.use("/api/agents", agentsRouter)
 app.use("/api/services", servicesRouter)
@@ -49,7 +63,25 @@ app.use((err, req, res, next) => {
 
 })
 
-app.listen(process.env.Port || 8800, () => {
+
+const server = http.createServer(app);
+const io = new Server(server);
+
+io.on('connection', (socket) => {
+    console.log(`clinet ID`);
+
+    socket.on('sendMessage', (data) => {
+        socket.broadcast.emit('receiveMessage', data)
+    })
+
+    socket.on('disconnect', () => {
+        console.log('A client disconnected.');
+    });
+});
+
+
+
+server.listen(process.env.Port || 8800, () => {
     connect();
-    console.log('Server is running')
-})
+    console.log('Server is running');
+});
