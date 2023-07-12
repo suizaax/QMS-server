@@ -123,7 +123,6 @@ export const todayClients = async (req, res, next) => {
         const memberCount = await clients.find({
             issuedTime: { $gte: new moment().format("YYYY-MM-DDT00:00:00"), $lte: new moment().format("YYYY-MM-DDT23:59:59") },
             companyId: req.params.id,
-            isActive: true
         }).countDocuments()
 
         res.status(200).json(memberCount)
@@ -256,43 +255,36 @@ export const weeklyClients = async (req, res, next) => {
         const yesterday = await clients.find({
             issuedTime: { $gte: new moment().subtract(1, "days").format("YYYY-MM-DDT00:00:00"), $lte: new moment().subtract(1, "days").format("YYYY-MM-DDT23:59:59") }
             , companyId: req.params.id,
-            isActive: true
         }).countDocuments()
 
         const twoDays = await clients.find({
             issuedTime: { $gte: new moment().subtract(2, "days").format("YYYY-MM-DDT00:00:00"), $lte: new moment().subtract(2, "days").format("YYYY-MM-DDT23:59:59") }
             , companyId: req.params.id,
-            isActive: true
         }).countDocuments()
 
         const threeDays = await clients.find({
             issuedTime: { $gte: new moment().subtract(3, "days").format("YYYY-MM-DDT00:00:00"), $lte: new moment().subtract(3, "days").format("YYYY-MM-DDT23:59:59") }
             , companyId: req.params.id,
-            isActive: true
         }).countDocuments()
 
         const fourDays = await clients.find({
             issuedTime: { $gte: new moment().subtract(4, "days").format("YYYY-MM-DDT00:00:00"), $lte: new moment().subtract(4, "days").format("YYYY-MM-DDT23:59:59") }
             , companyId: req.params.id,
-            isActive: true
         }).countDocuments()
 
         const fiveDays = await clients.find({
             issuedTime: { $gte: new moment().subtract(5, "days").format("YYYY-MM-DDT00:00:00"), $lte: new moment().subtract(5, "days").format("YYYY-MM-DDT23:59:59") }
             , companyId: req.params.id,
-            isActive: true
         }).countDocuments()
 
         const sixDays = await clients.find({
             issuedTime: { $gte: new moment().subtract(6, "days").format("YYYY-MM-DDT00:00:00"), $lte: new moment().subtract(6, "days").format("YYYY-MM-DDT23:59:59") }
             , companyId: req.params.id,
-            isActive: true
         }).countDocuments()
 
         const sevenDays = await clients.find({
             issuedTime: { $gte: new moment().subtract(7, "days").format("YYYY-MM-DDT00:00:00"), $lte: new moment().subtract(7, "days").format("YYYY-MM-DDT23:59:59") }
             , companyId: req.params.id,
-            isActive: true
         }).countDocuments()
 
         res.status(200).json([

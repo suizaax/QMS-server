@@ -11,6 +11,14 @@ const serviceSchema = new Schema({
         type: String,
         required: true
     },
+    nameAr: {
+        type: String,
+        required: false
+    },
+    nameFr: {
+        type: String,
+        required: false
+    },
     letter: {
         type: String,
         required: true,
@@ -28,6 +36,10 @@ const serviceSchema = new Schema({
         type: String,
         required: true
     },
+    clientType: {
+        type: String,
+        required: false
+    }
 }, { timestamps: true })
 
 export default mongoose.model("service", serviceSchema);

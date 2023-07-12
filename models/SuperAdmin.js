@@ -66,6 +66,30 @@ const superAdminSchema = new Schema({
     videoLink:{
         type: String,
         default: null
+    },
+    indiv: {
+        type: Boolean,
+        default: true
+    },
+    bus: {
+        type: Boolean,
+        default: true
+    },
+    hc: {
+        type: Boolean,
+        default: true
+    },
+    ar: {
+        type: Boolean,
+        default: true
+    },
+    fr: {
+        type: Boolean,
+        default: true
+    },
+    eng: {
+        type: Boolean,
+        default: true
     }
 }, { timestamps: true })
 

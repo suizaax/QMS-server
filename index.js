@@ -68,7 +68,7 @@ const server = http.createServer(app);
 const io = new Server(server);
 
 io.on('connection', (socket) => {
-    console.log(`clinet ID`);
+    console.log(`clinet ID: ${socket.id}`);
 
     socket.on('sendMessage', (data) => {
         socket.broadcast.emit('receiveMessage', data)
