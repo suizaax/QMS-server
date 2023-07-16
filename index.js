@@ -9,6 +9,7 @@ import clientsRouter from "./routes/ClientsRoute.js"
 import uploadRouter from "./controllers/UploadController.js"
 import http from 'http';
 import { Server } from 'socket.io';
+import { createError } from "./util/error.js"
 
 
 dotenv.config();
@@ -49,6 +50,16 @@ app.use("/api/agents", agentsRouter)
 app.use("/api/services", servicesRouter)
 app.use("/api/tickets", clientsRouter)
 app.use("/api/upload", uploadRouter)
+
+app.get("/internet", (req, res, next) => {
+    try {
+
+        res.status(200).send("Internet Connection is available")
+
+    } catch (error) {
+        next(error)
+    }
+})
 
 
 app.use((err, req, res, next) => {
