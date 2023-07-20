@@ -141,6 +141,15 @@ export const deleteNews = async (req, res, next) => {
     }
 }
 
+export const deleteImage = async (req, res, next) => {
+    try {
+        const company = await superAdmin.findByIdAndUpdate(req.params.id, { $pull: { imagesList: req.body.index } }, { new: true })
+        res.status(200).json(company)
+    } catch (error) {
+        next(error)
+    }
+}
+
 
 export const updateTicket = async (req, res, next) => {
     try {

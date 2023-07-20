@@ -1,5 +1,5 @@
 import express from "express";
-import { addNews, companyLogin, countersList, createCompany, createCounter, deleteCompany, deleteCounter, deleteNews, getCompanies, getCompany, updateCompany, updateTicket } from "../controllers/SuperAdminController.js";
+import { addNews, companyLogin, countersList, createCompany, createCounter, deleteCompany, deleteCounter, deleteImage, deleteNews, getCompanies, getCompany, updateCompany, updateTicket } from "../controllers/SuperAdminController.js";
 
 
 const router = express.Router()
@@ -27,6 +27,9 @@ router.put("/news/add/:id", addNews)
 
 // remove data
 router.put("/news/delete/:id", deleteNews)
+
+// remove data
+router.put("/image/delete/:id", deleteImage)
 
 // update ticket info
 router.put("/ticket/info/:id", updateTicket)
