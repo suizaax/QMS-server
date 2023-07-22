@@ -140,13 +140,16 @@ export const callClient = async (req, res, next) => {
 
         const ticketToCall = await Client.findOne({ isActive: true, letter: req.body.letter, companyId: currentAgent.companyId, issuedTime: { $gte: today } }).sort({ number: 1 })
 
-        if (servingCounter.clientTypes.includes(ticketToCall.clientType)) {
-            res.status(200).json(ticketToCall)
+        if (!ticketToCall) {
+            return next(createError(403, `There's no customer for the selected service for now.`))
+        } else if (servingCounter.clientTypes.includes(ticketToCall.clientType)) {
+            res.status(200).json(ticketToCall)  
         }
         if (ticketToCall === null) return next(createError(403, `There's no customer for the selected service for now.`))
 
     } catch (error) {
         next(error)
+        console.log(error)
     }
 }
 
