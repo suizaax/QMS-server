@@ -95,7 +95,7 @@ export const deleteCompany = async (req, res, next) => {
 export const getCompany = async (req, res, next) => {
     try {
         const companyInfo = await superAdmin.findById(req.params.id)
-        const ticketInfo = await Ticket.findOne({ companyId: companyInfo._id })
+        const ticketInfo = await Ticket.findOne({ companyId: req.params.id })
         const { password, ...otherDetails } = companyInfo._doc
 
 
@@ -183,7 +183,7 @@ export const createCounter = async (req, res, next) => {
 
 export const countersList = async (req, res, next) => {
     try {
-        const allCounters = await Counter.find({ companyId: req.params.id })
+        const allCounters = await Counter.find({ companyId: req.params.id }).sort({ counterNumber: 1 })
         const agents = await Promise.all(
             allCounters.map((agent) => {
                 if (agent.agentId) {
@@ -221,6 +221,18 @@ export const deleteCounter = async (req, res, next) => {
         await Counter.findByIdAndDelete(req.params.id)
 
         res.status(200).send("Deleted with success")
+
+    } catch (error) {
+        next(error)
+    }
+}
+
+export const updateCounter = async (req, res, next) => {
+    try {
+
+        const counterToUpdate = await Counter.findByIdAndUpdate(req.params.id, { ...req.body }, { new: true })
+
+        res.status(200).json(counterToUpdate)
 
     } catch (error) {
         next(error)

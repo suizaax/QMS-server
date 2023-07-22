@@ -23,6 +23,10 @@ const counterSchema = new Schema({
     },
     agentId: {
         type: String,
+    },
+    clientTypes: {
+        type: [String],
+        default: null
     }
 }, { timestamps: true })
 

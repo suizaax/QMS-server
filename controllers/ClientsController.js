@@ -3,6 +3,7 @@ import clients from "../models/Client.js"
 import { createError } from "../util/error.js"
 import Service from "../models/Service.js";
 import Client from "../models/Client.js";
+import Agent from "../models/Agent.js";
 
 export const createClient = async (req, res, next) => {
 
@@ -97,16 +98,55 @@ export const clientWaiting = async (req, res, next) => {
     }
 }
 
+export const clientWaitingPerAgent = async (req, res, next) => {
+    const today = moment().startOf('day');
+    try {
+        const findClients = await Client.find({
+            companyId: req.params.id,
+            isActive: true,
+            issuedTime: { $gte: today },
+        });
+
+        // Calculate the number of clients waiting for each service assigned to each agent
+        const agentsClientWaiting = {};
+        for (const client of findClients) {
+            const { agentId, service } = client;
+            if (agentId) {
+                if (!agentsClientWaiting[agentId]) {
+                    agentsClientWaiting[agentId] = {};
+                }
+                if (!agentsClientWaiting[agentId][service]) {
+                    agentsClientWaiting[agentId][service] = [];
+                }
+                agentsClientWaiting[agentId][service].push(client);
+            }
+        }
+
+        // Fetch agent details from the "Agent" model and attach the calculated waiting clients
+        const agents = await Agent.find({ _id: { $in: Object.keys(agentsClientWaiting) } });
+
+        // Prepare the final result with agent details and their waiting clients
+        const result = agents.map((agent) => ({
+            agentName: agent.name,
+            clientsWaiting: agentsClientWaiting[agent._id],
+        }));
+
+        res.status(200).json(agentsClientWaiting);
+    } catch (error) {
+        next(error);
+    }
+}
+
 export const transferClient = async (req, res, next) => {
     const today = moment().startOf('day');
     try {
         const serviceInfo = await Service.findById(req.body.id)
         const getBiggestNumber = await clients.findOne({ letter: serviceInfo.letter, issuedTime: { $gte: today.toDate() } }).sort({ number: -1 });
         if (getBiggestNumber) {
-            const clientToTransfer = await Client.findByIdAndUpdate(req.params.id, { $set: { letter: serviceInfo.letter, number: getBiggestNumber + 1, service: serviceInfo.name } })
+            const clientToTransfer = await clients.findByIdAndUpdate(req.params.id, { $set: { letter: serviceInfo.letter, number: getBiggestNumber.number + 1, service: serviceInfo.name } })
             res.status(200).json(clientToTransfer)
         } else {
-            const clientToTransfer = await Client.findByIdAndUpdate(req.params.id, { $set: { letter: serviceInfo.letter, number: 1, service: serviceInfo.name } })
+            const clientToTransfer = await clients.findByIdAndUpdate(req.params.id, { $set: { letter: serviceInfo.letter, number: 1, service: serviceInfo.name } })
             res.status(200).json(clientToTransfer)
         }
 

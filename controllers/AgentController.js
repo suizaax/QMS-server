@@ -3,12 +3,12 @@ import agent from "../models/Agent.js"
 import { createError } from "../util/error.js";
 import superAdmin from "../models/SuperAdmin.js"
 import Service from "../models/Service.js";
-import mongoose from 'mongoose';
 import Counter from "../models/Counter.js"
 import Agent from "../models/Agent.js";
 import Client from "../models/Client.js";
 import History from "../models/History.js";
 import moment from "moment";
+import CurrentServing from "../models/CurrentServing.js";
 
 export const registerAgent = async (req, res, next) => {
     try {
@@ -136,13 +136,14 @@ export const callClient = async (req, res, next) => {
     try {
         const today = moment().startOf('day');
         const currentAgent = await Agent.findById(req.params.id)
+        const servingCounter = await Counter.findOne({ agentId: currentAgent._id })
 
         const ticketToCall = await Client.findOne({ isActive: true, letter: req.body.letter, companyId: currentAgent.companyId, issuedTime: { $gte: today } }).sort({ number: 1 })
 
+        if (servingCounter.clientTypes.includes(ticketToCall.clientType)) {
+            res.status(200).json(ticketToCall)
+        }
         if (ticketToCall === null) return next(createError(403, `There's no customer for the selected service for now.`))
-
-
-        res.status(200).json(ticketToCall)
 
     } catch (error) {
         next(error)
@@ -190,6 +191,78 @@ export const getHistory = async (req, res, next) => {
 
         res.status(200).json(latest)
 
+    } catch (error) {
+        next(error)
+    }
+}
+
+export const getFullHistory = async (req, res, next) => {
+    try {
+
+        const latest = await History.find({ agentId: req.params.id }).sort({ endTime: -1 })
+
+        res.status(200).json(latest)
+
+    } catch (error) {
+        next(error)
+    }
+}
+
+
+export const getServedToday = async (req, res, next) => {
+    try {
+        const servedToday = await History.find({ agentId: req.params.id, startTime: { $gte: new moment().format("YYYY-MM-DDT00:00:00"), $lte: new moment().format("YYYY-MM-DDT23:59:59") } }).countDocuments()
+        res.status(200).json(servedToday)
+    } catch (error) {
+        next(error)
+    }
+}
+
+export const currentServingClient = async (req, res, next) => {
+    try {
+
+        const counterExist = await CurrentServing.findOne({ currentCounter: req.body.currentCounter, companyId: req.params.id })
+
+        if (!counterExist) {
+            const createClient = new CurrentServing({ companyId: req.params.id, ...req.body })
+
+            await createClient.save()
+            res.status(200).json(createClient)
+        } else {
+            const currentCounter = await CurrentServing.findByIdAndUpdate(counterExist._id, { ...req.body }, { new: true })
+            res.status(200).json(currentCounter)
+        }
+
+    } catch (error) {
+        next(error)
+    }
+}
+
+
+export const getAllCurrentServing = async (req, res, next) => {
+    try {
+
+        const allCurrentCounters = await CurrentServing.aggregate([
+            {
+                $match: { companyId: req.params.id },
+            },
+            {
+                $addFields: {
+                    currentCounterNum: {
+                        $convert: {
+                            input: "$currentCounter",
+                            to: "int",
+                            onError: 0, // Default value if conversion fails
+                            onNull: 0, // Default value if the field is null or missing
+                        },
+                    },
+                },
+            },
+            {
+                $sort: { currentCounterNum: 1 },
+            },
+        ]);
+        res.status(200).json(allCurrentCounters)
     } catch (error) {
         next(error)
     }

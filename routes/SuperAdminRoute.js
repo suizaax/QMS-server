@@ -1,5 +1,5 @@
 import express from "express";
-import { addNews, companyLogin, countersList, createCompany, createCounter, deleteCompany, deleteCounter, deleteImage, deleteNews, getCompanies, getCompany, updateCompany, updateTicket } from "../controllers/SuperAdminController.js";
+import { addNews, companyLogin, countersList, createCompany, createCounter, deleteCompany, deleteCounter, deleteImage, deleteNews, getCompanies, getCompany, updateCompany, updateCounter, updateTicket } from "../controllers/SuperAdminController.js";
 
 
 const router = express.Router()
@@ -42,5 +42,8 @@ router.get("/counter/:id", countersList)
 
 // delete counter
 router.delete("/counter/:id", deleteCounter)
+
+// delete counter
+router.put("/counter/:id", updateCounter)
 
 export default router;

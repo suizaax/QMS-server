@@ -1,5 +1,5 @@
 import express from "express"
-import { addHistory, callClient, callClientManually, deleteAgent, emptyCounter, getAgent, getAgents, getHistory, logAgent, registerAgent, updateAgent, updateAgentPass } from "../controllers/AgentController.js";
+import { addHistory, callClient, callClientManually, currentServingClient, deleteAgent, emptyCounter, getAgent, getAgents, getAllCurrentServing, getFullHistory, getHistory, getServedToday, logAgent, registerAgent, updateAgent, updateAgentPass } from "../controllers/AgentController.js";
 
 const router = express.Router();
 
@@ -39,7 +39,19 @@ router.post("/client/manual/:id", callClientManually)
 // add history
 router.post("/history/:id", addHistory)
 
-// get history
+// get history (10)
 router.get("/history/personal/:id", getHistory)
+
+// get history
+router.get("/history/personal/all/:id", getFullHistory)
+
+// served per dat
+router.get("/served/:id", getServedToday)
+
+// current Serving
+router.post("/current/serving/:id", currentServingClient)
+
+// current Serving
+router.get("/current/serving/:id", getAllCurrentServing)
 
 export default router
