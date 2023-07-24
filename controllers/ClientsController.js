@@ -88,6 +88,15 @@ export const updateClient = async (req, res, next) => {
     }
 }
 
+export const updateOtherClient = async (req, res, next) => {
+    try {
+        const updateClient = await clients.findByIdAndUpdate(req.params.id, { $set: { ...req.body } }, { new: true })
+        res.status(200).json(updateClient)
+    } catch (error) {
+        next(error)
+    }
+}
+
 export const clientWaiting = async (req, res, next) => {
     const today = moment().startOf('day');
     try {

@@ -1,5 +1,5 @@
 import express from "express";
-import { clientWaiting, clientWaitingPerAgent, createClient, getAllTickets, getTodayTickets, monthlyClients, monthlyServed, quarterlyClients, quarterlyServed, todayBusiness, todayClients, todayInd, todayServed, transferClient, updateClient, weeklyClients, weeklyServed, yearlyClients, yearlyServed, yesterdayBusiness, yesterdayClients, yesterdayInd, yesterdayServed } from "../controllers/ClientsController.js";
+import { clientWaiting, clientWaitingPerAgent, createClient, getAllTickets, getTodayTickets, monthlyClients, monthlyServed, quarterlyClients, quarterlyServed, todayBusiness, todayClients, todayInd, todayServed, transferClient, updateClient, updateOtherClient, weeklyClients, weeklyServed, yearlyClients, yearlyServed, yesterdayBusiness, yesterdayClients, yesterdayInd, yesterdayServed } from "../controllers/ClientsController.js";
 
 const router = express.Router();
 
@@ -8,6 +8,9 @@ router.post("/create", createClient)
 
 // update client
 router.put("/:id", updateClient)
+
+// update client data
+router.put("/all/:id", updateOtherClient)
 
 // get client
 router.post("/client/:id")
