@@ -27,9 +27,22 @@ const TicketSchema = new Schema({
         type: String,
         required: false
     },
-    thankingMessage:{
+    thankingMessage: {
         type: String,
         required: false
+    },
+    thankingMessageFr: {
+        type: String,
+        required: false
+    },
+    thankingMessageAr: {
+        type: String,
+        required: false
+    },
+    ticketType: {
+        type: String,
+        required: false,
+        default: "Full"
     }
 }, { timestamps: true })
 

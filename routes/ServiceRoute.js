@@ -1,5 +1,5 @@
 import express from "express";
-import { createService, deleteService, getService, getServices, serviceStats, updateService } from "../controllers/ServiceController.js";
+import { addAgentsToService, createService, deleteService, getService, getServices, removeAgentFromService, serviceStats, updateService } from "../controllers/ServiceController.js";
 
 const router = express.Router();
 
@@ -14,6 +14,12 @@ router.delete("/:id", deleteService)
 
 // get service
 router.get("/service/:id", getService);
+
+// delete agent from service
+router.put("/agent/delete/:id", removeAgentFromService)
+
+// Add agent from service
+router.put("/agent/add/:id", addAgentsToService)
 
 // get services
 router.get("/services/:id", getServices);

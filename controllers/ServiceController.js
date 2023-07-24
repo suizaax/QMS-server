@@ -37,14 +37,47 @@ export const deleteService = async (req, res, next) => {
 
 export const getService = async (req, res, next) => {
     try {
-        const serviceInfo = await service.findById(req.params.id)
-        const agentInfo = await Agent.findById(serviceInfo.agentId)
-        const serviceWithAgent = { ...serviceInfo.toObject(), agent: agentInfo };
-        res.status(200).json(serviceWithAgent)
+        const serviceInfo = await service.findById(req.params.id);
+
+        // Assuming serviceInfo.agentId is an array of agent IDs
+        const agentIds = serviceInfo.agentId;
+        const agents = await Agent.find({ _id: { $in: agentIds } });
+
+        // Now you have an array of agent documents, you can add it to the serviceInfo object
+        const serviceWithAgents = { ...serviceInfo.toObject(), agents: agents };
+        res.status(200).json(serviceWithAgents);
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const removeAgentFromService = async (req, res, next) => {
+    try {
+        const serviceInfo = await service.findByIdAndUpdate(req.params.id, { $pull: { agentId: req.body.index } }, { new: true })
+        res.status(200).json(serviceInfo)
     } catch (error) {
         next(error)
     }
 }
+
+export const addAgentsToService = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const selectedAgentIds = req.body.selectedAgentIds; // Assuming you have the selectedAgentIds array in req.body
+
+        // Iterate through the selectedAgentIds and update the service document individually
+        for (const agentId of selectedAgentIds) {
+            await service.findByIdAndUpdate(id, { $push: { agentId: agentId } });
+        }
+
+        // Fetch and return the updated serviceInfo
+        const serviceInfo = await service.findById(id);
+        res.status(200).json(serviceInfo);
+    } catch (error) {
+        next(error);
+    }
+}
+
 
 export const getServices = async (req, res, next) => {
     try {
