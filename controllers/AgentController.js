@@ -144,9 +144,9 @@ export const callClient = async (req, res, next) => {
             return next(createError(403, `There's no customer for the selected service for now.`))
         } else if (servingCounter.clientTypes.includes(ticketToCall.clientType)) {
             res.status(200).json(ticketToCall)
+        } else {
+            return next(createError(403, `There's no customer for the selected service for now.`))
         }
-        if (ticketToCall === null) return next(createError(403, `There's no customer for the selected service for now.`))
-
     } catch (error) {
         next(error)
         console.log(error)
