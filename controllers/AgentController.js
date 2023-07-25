@@ -49,33 +49,37 @@ export const logAgent = async (req, res, next) => {
 
         const companyData = await superAdmin.findOne({ _id: updatedAgent.companyId });
 
-        const assignCounter = await Counter.findOne({ companyId: updatedAgent.companyId, isActive: false })
+        let assignedCounter = await Counter.findOne({ agentId: updatedAgent._id });
 
-        if (!assignCounter) {
-            const checkAllCounters = await Counter.findOne({ agentId: updatedAgentId })
-            const finalData = {
-                services: serviceData,
-                company: companyData,
-                agent: updatedAgent,
-                counter: checkAllCounters
-            };
+        if (!assignedCounter) {
+            // If no counter is assigned to the agent, find an available counter
+            assignedCounter = await Counter.findOne({ companyId: updatedAgent.companyId, isActive: false });
 
-            res.status(200).json(finalData);
-        } else if (assignCounter) {
-            const updatedCounter = await Counter.findByIdAndUpdate(assignCounter._id, { $set: { agentId: updatedAgent._id, isActive: true } }, { new: true })
+            if (!assignedCounter) {
+                // If no available counter is found, create an error
+                return next(createError(400, "No Counter available."));
+            }
 
+            // Assign the agent to the counter
+            assignedCounter.agentId = updatedAgent._id;
+            assignedCounter.isActive = true;
+            await assignedCounter.save();
 
-            const finalData = {
-                services: serviceData,
-                company: companyData,
-                agent: updatedAgent,
-                counter: updatedCounter
-            };
-
-            res.status(200).json(finalData);
-        } else {
-            return next(createError(400, "No Counter available"));
+            // Update the agent to be assigned to the counter
+            updatedAgent.isAssignedToCounter = true;
+            updatedAgent.assignedCounterId = assignedCounter._id;
+            await updatedAgent.save();
         }
+
+
+        const finalData = {
+            services: serviceData,
+            company: companyData,
+            agent: updatedAgent,
+            counter: assignedCounter,
+        };
+
+        res.status(200).json(finalData);
 
     } catch (error) {
         next(error);

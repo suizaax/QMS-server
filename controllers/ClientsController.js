@@ -4,6 +4,7 @@ import { createError } from "../util/error.js"
 import Service from "../models/Service.js";
 import Client from "../models/Client.js";
 import Agent from "../models/Agent.js";
+import Counter from "../models/Counter.js";
 
 export const createClient = async (req, res, next) => {
 
@@ -108,41 +109,17 @@ export const clientWaiting = async (req, res, next) => {
 }
 
 export const clientWaitingPerAgent = async (req, res, next) => {
+    const currentCounter = await Counter.findById(req.params.counterId)
+    const updatedAgent = await Agent.findById(req.params.agentId)
+    const updatedAgentId = (updatedAgent._id).toString();
+    const serviceData = await Service.find({ agentId: { $in: updatedAgentId } });
+    const serviceIds = serviceData.map((service) => service.name);
     const today = moment().startOf('day');
     try {
-        const findClients = await Client.find({
-            companyId: req.params.id,
-            isActive: true,
-            issuedTime: { $gte: today },
-        });
-
-        // Calculate the number of clients waiting for each service assigned to each agent
-        const agentsClientWaiting = {};
-        for (const client of findClients) {
-            const { agentId, service } = client;
-            if (agentId) {
-                if (!agentsClientWaiting[agentId]) {
-                    agentsClientWaiting[agentId] = {};
-                }
-                if (!agentsClientWaiting[agentId][service]) {
-                    agentsClientWaiting[agentId][service] = [];
-                }
-                agentsClientWaiting[agentId][service].push(client);
-            }
-        }
-
-        // Fetch agent details from the "Agent" model and attach the calculated waiting clients
-        const agents = await Agent.find({ _id: { $in: Object.keys(agentsClientWaiting) } });
-
-        // Prepare the final result with agent details and their waiting clients
-        const result = agents.map((agent) => ({
-            agentName: agent.name,
-            clientsWaiting: agentsClientWaiting[agent._id],
-        }));
-
-        res.status(200).json(agentsClientWaiting);
+        const findClients = await clients.find({ companyId: req.params.id, isActive: true, issuedTime: { $gte: today }, clientType: { $in: currentCounter.clientTypes }, service: { $in: serviceIds } })
+        res.status(200).json(findClients)
     } catch (error) {
-        next(error);
+        next(error)
     }
 }
 

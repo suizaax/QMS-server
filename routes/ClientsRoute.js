@@ -25,7 +25,7 @@ router.get("/clients/today/:id", getTodayTickets)
 router.get('/count/waiting/:id', clientWaiting)
 
 // count Clients
-router.get('/count/waiting/agent/:id', clientWaitingPerAgent)
+router.get('/count/waiting/agent/:id/:counterId/:agentId', clientWaitingPerAgent)
 
 // transfer client
 router.put("/client/transfer/:id", transferClient)
