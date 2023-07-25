@@ -51,23 +51,35 @@ export const logAgent = async (req, res, next) => {
 
         const assignCounter = await Counter.findOne({ companyId: updatedAgent.companyId, isActive: false })
 
-        if (!assignCounter) return next(createError(400, "No Counter available"))
-        const updatedCounter = await Counter.findByIdAndUpdate(assignCounter._id, { $set: { agentId: updatedAgent._id, isActive: true } }, { new: true })
+        if (!assignCounter) {
+            const checkAllCounters = await Counter.findOne({ agentId: updatedAgentId })
+            const finalData = {
+                services: serviceData,
+                company: companyData,
+                agent: updatedAgent,
+                counter: updatedCounter
+            };
+
+            res.status(200).json(finalData);
+        } else if (assignCounter) {
+            const updatedCounter = await Counter.findByIdAndUpdate(assignCounter._id, { $set: { agentId: updatedAgent._id, isActive: true } }, { new: true })
 
 
-        const finalData = {
-            services: serviceData,
-            company: companyData,
-            agent: updatedAgent,
-            counter: updatedCounter
-        };
+            const finalData = {
+                services: serviceData,
+                company: companyData,
+                agent: updatedAgent,
+                counter: updatedCounter
+            };
 
-        res.status(200).json(finalData);
+            res.status(200).json(finalData);
+        } else {
+            return next(createError(400, "No Counter available"));
+        }
+
     } catch (error) {
         next(error);
     }
-
-
 }
 
 export const emptyCounter = async (req, res, next) => {

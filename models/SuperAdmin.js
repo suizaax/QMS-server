@@ -90,6 +90,10 @@ const superAdminSchema = new Schema({
     eng: {
         type: Boolean,
         default: true
+    },
+    monitorLanguage:{
+        type: String,
+        default: "ENG"
     }
 }, { timestamps: true })
 
