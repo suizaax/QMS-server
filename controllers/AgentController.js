@@ -57,7 +57,7 @@ export const logAgent = async (req, res, next) => {
                 services: serviceData,
                 company: companyData,
                 agent: updatedAgent,
-                counter: updatedCounter
+                counter: checkAllCounters
             };
 
             res.status(200).json(finalData);
