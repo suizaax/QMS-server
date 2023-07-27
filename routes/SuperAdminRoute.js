@@ -1,5 +1,5 @@
 import express from "express";
-import { addNews, companyLogin, countersList, createCompany, createCounter, deleteCompany, deleteCounter, deleteImage, deleteNews, getCompanies, getCompany, updateCompany, updateCounter, updateTicket } from "../controllers/SuperAdminController.js";
+import { addNews, companyLogin, countersList, createCompany, createCounter, deleteCompany, deleteCounter, deleteImage, deleteNews, getCompanies, getCompany, updateCompany, updateCompanyPass, updateCounter, updateTicket } from "../controllers/SuperAdminController.js";
 
 
 const router = express.Router()
@@ -12,6 +12,9 @@ router.post("/login", companyLogin);
 
 // update company
 router.put("/:id", updateCompany);
+
+// update agent password
+router.put("/password/:id", updateCompanyPass)
 
 // delete company
 router.delete("/:id", deleteCompany);

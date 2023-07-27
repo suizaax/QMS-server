@@ -94,6 +94,10 @@ const superAdminSchema = new Schema({
     monitorLanguage:{
         type: String,
         default: "ENG"
+    },
+    counterName: {
+        type: String,
+        default: "Counter"
     }
 }, { timestamps: true })
 

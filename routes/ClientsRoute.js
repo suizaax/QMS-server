@@ -1,10 +1,13 @@
 import express from "express";
-import { clientWaiting, clientWaitingPerAgent, createClient, getAllTickets, getTodayTickets, monthlyClients, monthlyServed, quarterlyClients, quarterlyServed, todayBusiness, todayClients, todayInd, todayServed, transferClient, updateClient, updateOtherClient, weeklyClients, weeklyServed, yearlyClients, yearlyServed, yesterdayBusiness, yesterdayClients, yesterdayInd, yesterdayServed } from "../controllers/ClientsController.js";
+import { clientWaiting, clientWaitingPerAgent, createClient, getAllTickets, getTodayTickets, monthlyClients, monthlyServed, quarterlyClients, quarterlyServed, resetTodayClients, todayBusiness, todayClients, todayInd, todayServed, transferClient, updateClient, updateOtherClient, weeklyClients, weeklyServed, yearlyClients, yearlyServed, yesterdayBusiness, yesterdayClients, yesterdayInd, yesterdayServed } from "../controllers/ClientsController.js";
 
 const router = express.Router();
 
 // create client
 router.post("/create", createClient)
+
+// reset client to zero
+router.put("/client/reset/:id", resetTodayClients)
 
 // update client
 router.put("/:id", updateClient)

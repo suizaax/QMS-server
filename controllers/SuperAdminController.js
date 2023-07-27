@@ -83,6 +83,18 @@ export const updateCompany = async (req, res, next) => {
     }
 }
 
+export const updateCompanyPass = async (req, res, next) => {
+    try {
+        const salt = bcrypt.genSaltSync(10);
+        const hash = bcrypt.hashSync(req.body.password, salt)
+
+        const updatedAgent = await superAdmin.findByIdAndUpdate(req.params.id, { $set: { password: hash } }, { new: true })
+        res.status(200).json(updatedAgent)
+    } catch (error) {
+        next(error)
+    }
+}
+
 export const deleteCompany = async (req, res, next) => {
     try {
         await superAdmin.findByIdAndDelete(req.params.id)

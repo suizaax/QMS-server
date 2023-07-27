@@ -9,6 +9,7 @@ import Client from "../models/Client.js";
 import History from "../models/History.js";
 import moment from "moment";
 import CurrentServing from "../models/CurrentServing.js";
+import Ticket from "../models/Ticket.js";
 
 export const registerAgent = async (req, res, next) => {
     try {
@@ -86,6 +87,55 @@ export const logAgent = async (req, res, next) => {
     }
 }
 
+export const adminLogin = async (req, res, next) => {
+
+    try {
+        const admin = await agent.findOne({ email: req.body.email })
+        if (!admin) return next(createError(400, "Admin doesn't exist"))
+
+        const validPass = await bcrypt.compare(req.body.password, admin.password)
+        if (!validPass) return next(createError(400, "E-mail or password is wrong"))
+
+        const validPosition = admin.position === "Admin"
+        if (!validPosition) return next(createError(403, "Action not authorized"))
+
+        const ticketInfo = await Ticket.findOne({ companyId: admin.companyId })
+        const companyInfo = await superAdmin.findById(admin.companyId)
+        const { password, ...otherDetails } = admin._doc
+
+        if (ticketInfo) {
+            const finalData = { ...otherDetails, ticket: ticketInfo, company: companyInfo }
+            res.status(200).json(finalData)
+            await agent.findByIdAndUpdate(admin._id, { $set: { lastLogin: Date.now() } })
+        } else {
+            const finalData = { ...otherDetails, company: companyInfo }
+            await agent.findByIdAndUpdate(admin._id, { $set: { lastLogin: Date.now() } })
+            res.status(200).json(finalData)
+        }
+
+
+
+    } catch (error) {
+        next(error)
+    }
+
+}
+
+export const adminGetInfo = async (req, res, next) => {
+    try {
+        const admin = await agent.findById(req.params.id)
+        const companyInfo = await superAdmin.findById(admin.companyId)
+        const ticketInfo = await Ticket.findOne({ companyId: admin.companyId })
+        const { password, ...otherDetails } = admin._doc
+
+        const finalData = { ...otherDetails, ticket: ticketInfo, company: companyInfo }
+        res.status(200).json(finalData)
+
+    } catch (error) {
+        next(error)
+    }
+}
+
 export const emptyCounter = async (req, res, next) => {
     try {
 
@@ -154,7 +204,7 @@ export const callClient = async (req, res, next) => {
         const currentAgent = await Agent.findById(req.params.id)
         const servingCounter = await Counter.findOne({ agentId: currentAgent._id })
 
-        const ticketToCall = await Client.findOne({ isActive: true, letter: req.body.letter, companyId: currentAgent.companyId, issuedTime: { $gte: today }, clientType: { $in: servingCounter.clientTypes } }).sort({ number: 1 })
+        const ticketToCall = await Client.findOne({ isActive: true, letter: req.body.letter, companyId: currentAgent.companyId, issuedTime: { $gte: today }, clientType: { $in: servingCounter.clientTypes }, number: { $ne: null } }).sort({ number: 1 })
 
         if (!ticketToCall) {
             return next(createError(403, `There's no customer for the selected service for now.`))

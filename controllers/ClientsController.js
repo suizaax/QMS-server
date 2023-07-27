@@ -56,9 +56,21 @@ export const createClient = async (req, res, next) => {
 
 }
 
+export const resetTodayClients = async (req, res, next) => {
+    try {
+        const today = moment().startOf('day');
+        await clients.updateMany({ issuedTime: { $gte: today }, companyId: req.params.id }, { $set: { number: null } });
+
+        res.status(200).send("Counting reset with success.")
+
+    } catch (error) {
+        next(error)
+    }
+}
+
 export const getAllTickets = async (req, res, next) => {
     try {
-        const allTickets = await clients.find({ companyId: req.params.id })
+        const allTickets = await clients.find({ companyId: req.params.id, number: { $ne: null } })
         res.status(200).json(allTickets)
     } catch (error) {
         next(error)
@@ -71,7 +83,8 @@ export const getTodayTickets = async (req, res, next) => {
 
         const allTickets = await clients.find({
             companyId: req.params.id,
-            issuedTime: { $gte: today.toDate() }
+            issuedTime: { $gte: today.toDate() },
+            number: { $ne: null }
         });
 
         res.status(200).json(allTickets);

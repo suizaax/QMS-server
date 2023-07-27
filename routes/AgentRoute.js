@@ -1,5 +1,5 @@
 import express from "express"
-import { addHistory, callClient, callClientManually, currentServingClient, deleteAgent, emptyCounter, getAgent, getAgents, getAllCurrentServing, getFullHistory, getHistory, getServedToday, logAgent, registerAgent, updateAgent, updateAgentPass } from "../controllers/AgentController.js";
+import { addHistory, adminGetInfo, adminLogin, callClient, callClientManually, currentServingClient, deleteAgent, emptyCounter, getAgent, getAgents, getAllCurrentServing, getFullHistory, getHistory, getServedToday, logAgent, registerAgent, updateAgent, updateAgentPass } from "../controllers/AgentController.js";
 
 const router = express.Router();
 
@@ -8,6 +8,12 @@ router.post("/register", registerAgent);
 
 // login agent
 router.post("/login", logAgent);
+
+// login admin
+router.post("/login/admin", adminLogin)
+
+// get company data for agent
+router.get("/company/info/:id", adminGetInfo)
 
 // update agent
 router.put("/:id", updateAgent);
