@@ -121,6 +121,17 @@ export const clientWaiting = async (req, res, next) => {
     }
 }
 
+export const clientWaitingPerService = async (req, res, next) => {
+    const today = moment().startOf('day');
+    try {
+        const findClients = await clients.find({ companyId: req.params.id, isActive: true, issuedTime: { $gte: today }, service: req.params.service })
+        console.log({clients: findClients})
+        res.status(200).json(findClients)
+    } catch (error) {
+        next(error)
+    }
+}
+
 export const clientWaitingPerAgent = async (req, res, next) => {
     const currentCounter = await Counter.findById(req.params.counterId)
     const updatedAgent = await Agent.findById(req.params.agentId)

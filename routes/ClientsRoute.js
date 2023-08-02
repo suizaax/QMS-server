@@ -1,5 +1,5 @@
 import express from "express";
-import { clientWaiting, clientWaitingPerAgent, createClient, getAllTickets, getTodayTickets, monthlyClients, monthlyServed, quarterlyClients, quarterlyServed, resetTodayClients, todayBusiness, todayClients, todayInd, todayServed, transferClient, updateClient, updateOtherClient, weeklyClients, weeklyServed, yearlyClients, yearlyServed, yesterdayBusiness, yesterdayClients, yesterdayInd, yesterdayServed } from "../controllers/ClientsController.js";
+import { clientWaiting, clientWaitingPerAgent, clientWaitingPerService, createClient, getAllTickets, getTodayTickets, monthlyClients, monthlyServed, quarterlyClients, quarterlyServed, resetTodayClients, todayBusiness, todayClients, todayInd, todayServed, transferClient, updateClient, updateOtherClient, weeklyClients, weeklyServed, yearlyClients, yearlyServed, yesterdayBusiness, yesterdayClients, yesterdayInd, yesterdayServed } from "../controllers/ClientsController.js";
 
 const router = express.Router();
 
@@ -27,7 +27,10 @@ router.get("/clients/today/:id", getTodayTickets)
 // count Clients
 router.get('/count/waiting/:id', clientWaiting)
 
-// count Clients
+// count Clients per Service
+router.get('/count/waiting/service/:id/:service', clientWaitingPerService)
+
+// count Clients per agent
 router.get('/count/waiting/agent/:id/:counterId/:agentId', clientWaitingPerAgent)
 
 // transfer client
