@@ -55,7 +55,7 @@ const superAdminSchema = new Schema({
         type: String,
         default: "Updates"
     },
-    mediaType:{
+    mediaType: {
         type: String,
         default: "Images"
     },
@@ -63,7 +63,7 @@ const superAdminSchema = new Schema({
         type: Array,
         default: null
     },
-    videoLink:{
+    videoLink: {
         type: String,
         default: null
     },
@@ -91,13 +91,21 @@ const superAdminSchema = new Schema({
         type: Boolean,
         default: true
     },
-    monitorLanguage:{
+    monitorLanguage: {
         type: String,
         default: "ENG"
     },
     counterName: {
         type: String,
         default: "Counter"
+    },
+    voiceLanguage: {
+        type: String,
+        default: "en"
+    },
+    voiceGender: {
+        type: String,
+        default: "male"
     }
 }, { timestamps: true })
 
