@@ -2,6 +2,7 @@ import Agent from "../models/Agent.js";
 import Client from "../models/Client.js";
 import service from "../models/Service.js"
 import mongoose from "mongoose";
+import { startOfWeek, startOfMonth, startOfQuarter, startOfYear, endOfWeek, endOfMonth, endOfQuarter, endOfYear } from 'date-fns';
 
 export const createService = async (req, res, next) => {
     try {
@@ -103,39 +104,133 @@ export const getServices = async (req, res, next) => {
 }
 
 
-export const serviceStats = async (req, res, next) => {
-    try {
-        const serviceStats = await Client.aggregate([
-            {
-                $match: {
-                    companyId: req.params.id
-                }
-            },
-            {
-                $group: {
-                    _id: '$service',
-                    count: { $sum: 1 },
-                }
-            },
-            {
-                $project: {
-                    _id: 0,
-                    service: '$_id',
-                    count: 1
-                }
-            },
-            {
-                $sort: {
-                    count: -1,
-                },
-            },
-            {
-                $limit: 8,
-            },
-        ]);
+// export const serviceStats = async (req, res, next) => {
+//     try {
+//         const serviceStats = await Client.aggregate([
+//             {
+//                 $match: {
+//                     companyId: req.params.id
+//                 }
+//             },
+//             {
+//                 $group: {
+//                     _id: '$service',
+//                     count: { $sum: 1 },
+//                 }
+//             },
+//             {
+//                 $project: {
+//                     _id: 0,
+//                     service: '$_id',
+//                     count: 1
+//                 }
+//             },
+//             {
+//                 $sort: {
+//                     count: -1,
+//                 },
+//             },
+//             {
+//                 $limit: 8,
+//             },
+//         ]);
 
-        res.status(200).json(serviceStats);
+//         res.status(200).json(serviceStats);
+//     } catch (error) {
+//         next(error);
+//     }
+// };
+
+export const fetchWeeklyStats = async (req, res, next) => {
+    try {
+        const currentDate = new Date();
+        const weekStart = startOfWeek(currentDate);
+        const weekEnd = endOfWeek(currentDate);
+
+        const serviceStats = await fetchStatistics(req.params.id, weekStart, weekEnd);
+
+        res.json(serviceStats);
     } catch (error) {
         next(error);
     }
+};
+
+// Function to fetch monthly statistics
+export const fetchMonthlyStats = async (req, res, next) => {
+    try {
+        const currentDate = new Date();
+        const monthStart = startOfMonth(currentDate);
+        const monthEnd = endOfMonth(currentDate);
+
+        const serviceStats = await fetchStatistics(req.params.id, monthStart, monthEnd);
+
+        res.json(serviceStats);
+    } catch (error) {
+        next(error);
+    }
+};
+
+// Function to fetch quarterly statistics
+export const fetchQuarterlyStats = async (req, res, next) => {
+    try {
+        const currentDate = new Date();
+        const quarterStart = startOfQuarter(currentDate);
+        const quarterEnd = endOfQuarter(currentDate);
+
+        const serviceStats = await fetchStatistics(req.params.id, quarterStart, quarterEnd);
+
+        res.json(serviceStats);
+    } catch (error) {
+        next(error);
+    }
+};
+
+// Function to fetch yearly statistics
+export const fetchYearlyStats = async (req, res, next) => {
+    try {
+        const currentDate = new Date();
+        const yearStart = startOfYear(currentDate);
+        const yearEnd = endOfYear(currentDate);
+
+        const serviceStats = await fetchStatistics(req.params.id, yearStart, yearEnd);
+
+        res.json(serviceStats);
+    } catch (error) {
+        next(error);
+    }
+};
+
+// Common function to fetch statistics for a given date range
+const fetchStatistics = async (companyId, startDate, endDate) => {
+    const serviceStats = await Client.aggregate([
+        {
+            $match: {
+                companyId,
+                createdAt: { $gte: startDate, $lte: endDate }
+            }
+        },
+        {
+            $group: {
+                _id: '$service',
+                count: { $sum: 1 }
+            }
+        },
+        {
+            $project: {
+                _id: 0,
+                service: '$_id',
+                count: 1
+            }
+        },
+        {
+            $sort: {
+                count: -1,
+            },
+        },
+        {
+            $limit: 8
+        }
+    ]);
+
+    return serviceStats;
 };

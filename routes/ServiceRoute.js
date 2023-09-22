@@ -1,5 +1,5 @@
 import express from "express";
-import { addAgentsToService, createService, deleteService, getService, getServices, removeAgentFromService, serviceStats, updateService } from "../controllers/ServiceController.js";
+import { addAgentsToService, createService, deleteService, fetchMonthlyStats, fetchQuarterlyStats, fetchWeeklyStats, fetchYearlyStats, getService, getServices, removeAgentFromService, updateService } from "../controllers/ServiceController.js";
 
 const router = express.Router();
 
@@ -27,7 +27,21 @@ router.get("/services/:id", getServices);
 // services for kiosk
 router.get("/kiosk/:id")
 
-// services stats
-router.get("/stats/service/:id", serviceStats)
+// // services stats
+// router.get("/stats/service/:id", serviceStats)
+
+// services stats week
+router.get("/stats/service/weekly/:id", fetchWeeklyStats)
+
+// services stats month
+router.get("/stats/service/monthly/:id", fetchMonthlyStats)
+
+
+// services stats quarter
+router.get("/stats/service/quarterly/:id", fetchQuarterlyStats)
+
+
+// services stats year
+router.get("/stats/service/yearly/:id", fetchYearlyStats)
 
 export default router
