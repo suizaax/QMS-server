@@ -106,6 +106,10 @@ const superAdminSchema = new Schema({
     voiceGender: {
         type: String,
         default: "male"
+    },
+    beepSound: {
+        type: Boolean,
+        default: false
     }
 }, { timestamps: true })
 
