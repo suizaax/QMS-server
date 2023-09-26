@@ -14,7 +14,6 @@ export const createClient = async (req, res, next) => {
 
         if (clients.find()) {
             const checkExistance = await clients.findOne({ number: req.body.number, letter: req.body.letter }).lean().exec()
-
             if (checkExistance) return next(createError(400, 'Ticket with same number already issued'))
         }
 

@@ -179,7 +179,7 @@ export const createCounter = async (req, res, next) => {
             ...req.body
         })
 
-        const checkExistence = await Counter.findOne({ counterNumber: req.body.counterNumber }).lean().exec()
+        const checkExistence = await Counter.findOne({ counterNumber: req.body.counterNumber, companyId: req.body.companyId }).lean().exec()
 
         if (checkExistence) {
             return next(createError(403, "Counter with same number already exist."))
