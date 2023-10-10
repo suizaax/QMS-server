@@ -10,6 +10,8 @@ import uploadRouter from "./controllers/UploadController.js"
 import http from 'http';
 import { Server } from 'socket.io';
 import { createError } from "./util/error.js"
+import cron from 'node-cron'
+import CurrentServing from "./models/CurrentServing.js"
 
 
 dotenv.config();
@@ -74,6 +76,11 @@ app.use((err, req, res, next) => {
 
 })
 
+
+cron.schedule('0 0 * * *', async () => {
+    const deleted = await CurrentServing.find().deleteMany()
+    console.log(deleted)
+})
 
 const server = http.createServer(app);
 const io = new Server(server);
