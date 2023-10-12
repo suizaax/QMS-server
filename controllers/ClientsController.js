@@ -17,7 +17,7 @@ export const createClient = async (req, res, next) => {
             if (checkExistance) return next(createError(400, 'Ticket with same number already issued'))
         }
 
-        const getBiggestNumber = await clients.findOne({ letter: req.body.letter, issuedTime: { $gte: today.toDate() } }).sort({ number: -1 });
+        const getBiggestNumber = await clients.findOne({ letter: req.body.letter, issuedTime: { $gte: today.toDate() }, companyId: req.body.companyId  }).sort({ number: -1 });
         console.log(getBiggestNumber)
 
         if (getBiggestNumber) {
