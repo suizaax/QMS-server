@@ -209,6 +209,7 @@ export const callClient = async (req, res, next) => {
         if (!ticketToCall) {
             return next(createError(403, `There's no customer for the selected service for now.`))
         } else if (servingCounter.clientTypes.includes(ticketToCall.clientType)) {
+            await Client.findByIdAndUpdate(ticketToCall._id, { isActive: false }, { new: true })
             res.status(200).json(ticketToCall)
         } else {
             return next(createError(403, `There's no customer for the selected service for now.`))
