@@ -103,44 +103,6 @@ export const getServices = async (req, res, next) => {
 
 }
 
-
-// export const serviceStats = async (req, res, next) => {
-//     try {
-//         const serviceStats = await Client.aggregate([
-//             {
-//                 $match: {
-//                     companyId: req.params.id
-//                 }
-//             },
-//             {
-//                 $group: {
-//                     _id: '$service',
-//                     count: { $sum: 1 },
-//                 }
-//             },
-//             {
-//                 $project: {
-//                     _id: 0,
-//                     service: '$_id',
-//                     count: 1
-//                 }
-//             },
-//             {
-//                 $sort: {
-//                     count: -1,
-//                 },
-//             },
-//             {
-//                 $limit: 8,
-//             },
-//         ]);
-
-//         res.status(200).json(serviceStats);
-//     } catch (error) {
-//         next(error);
-//     }
-// };
-
 export const fetchWeeklyStats = async (req, res, next) => {
     try {
         const currentDate = new Date();

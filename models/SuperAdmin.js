@@ -110,6 +110,14 @@ const superAdminSchema = new Schema({
     beepSound: {
         type: Boolean,
         default: false
+    },
+    barSpeed: {
+        type: Number,
+        default: 200
+    },
+    barDirection: {
+        type: String,
+        default: "left"
     }
 }, { timestamps: true })
 

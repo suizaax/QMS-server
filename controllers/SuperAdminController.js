@@ -250,3 +250,15 @@ export const updateCounter = async (req, res, next) => {
         next(error)
     }
 }
+
+export const updateCounterManually = async (req, res, next) => {
+    try {
+
+        const counterToUpdate = await Counter.findByIdAndUpdate(req.params.id, { ...req.body }, { new: true })
+
+        res.status(200).json(counterToUpdate)
+
+    } catch (error) {
+        next(error)
+    }
+}
