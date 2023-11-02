@@ -50,6 +50,6 @@ router.delete("/counter/:id", deleteCounter)
 router.put("/counter/:id", updateCounter)
 
 // Update Manually counter
-router.put("/counter/manual/:id", updateCounterManually)
+router.put("/counter/manual/:id/:counterId", updateCounterManually)
 
 export default router;
